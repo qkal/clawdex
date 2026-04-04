@@ -4,12 +4,22 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "pnpm -r run test",
     "typecheck": "tsc -b tsconfig.build.json",
-    "clean": "pnpm -r run clean"
+    "lint": "eslint .",
+    "lint:fix": "eslint --fix .",
+    "test": "pnpm -r run test",
+    "test:integration": "pnpm -r run test:integration",
+    "build": "pnpm -r run build",
+    "clean": "pnpm -r run clean",
+    "format": "prettier --check .",
+    "format:fix": "prettier --write ."
   },
   "devDependencies": {
-    "typescript": "^5.7.0",
-    "@types/bun": "^1.2.0"
-  }
+    "@types/bun": "^1.2.0",
+    "eslint": "^9.0.0",
+    "prettier": "^3.6.0",
+    "typescript": "^5.9.0",
+    "typescript-eslint": "^8.0.0"
+  },
+  "packageManager": "pnpm@10.29.3"
 }

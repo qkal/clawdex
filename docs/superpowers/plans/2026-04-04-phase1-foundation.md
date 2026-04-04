@@ -109,7 +109,7 @@ packages/testkit/
 - Create: `bunfig.toml`
 - Modify: `.gitignore`
 
-- [ ] **Step 1: Create root package.json**
+- [x] **Step 1: Create root package.json**
 
 ```json
 {
@@ -139,14 +139,14 @@ packages/testkit/
 }
 ```
 
-- [ ] **Step 2: Create pnpm-workspace.yaml**
+- [x] **Step 2: Create pnpm-workspace.yaml**
 
 ```yaml
 packages:
   - "packages/*"
 ```
 
-- [ ] **Step 3: Create base tsconfig.json**
+- [x] **Step 3: Create base tsconfig.json**
 
 ```json
 {
@@ -170,7 +170,7 @@ packages:
 }
 ```
 
-- [ ] **Step 4: Create tsconfig.build.json**
+- [x] **Step 4: Create tsconfig.build.json**
 
 This file is empty initially — project references are added as packages are created in later tasks.
 
@@ -181,7 +181,7 @@ This file is empty initially — project references are added as packages are cr
 }
 ```
 
-- [ ] **Step 5: Create eslint.config.js**
+- [x] **Step 5: Create eslint.config.js**
 
 ```js
 import tseslint from "typescript-eslint";
@@ -203,7 +203,7 @@ export default tseslint.config(
 );
 ```
 
-- [ ] **Step 6: Create .node-version and bunfig.toml**
+- [x] **Step 6: Create .node-version and bunfig.toml**
 
 `.node-version`:
 ```
@@ -216,7 +216,7 @@ export default tseslint.config(
 coverage = false
 ```
 
-- [ ] **Step 7: Update .gitignore**
+- [x] **Step 7: Update .gitignore**
 
 Add these lines to the existing `.gitignore`:
 
@@ -233,7 +233,7 @@ node_modules/
 *.tsbuildinfo
 ```
 
-- [ ] **Step 8: Install dependencies and verify**
+- [x] **Step 8: Install dependencies and verify**
 
 Run:
 ```bash
@@ -241,7 +241,9 @@ pnpm install
 ```
 Expected: clean install, `pnpm-lock.yaml` updated, no errors.
 
-- [ ] **Step 9: Commit**
+- [x] **Step 9: Commit**
+
+Execution note: In this run, Step 9 was satisfied via incremental micro-commits for Steps 1-8 rather than one aggregate scaffolding commit.
 
 ```bash
 git add package.json pnpm-workspace.yaml tsconfig.json tsconfig.build.json eslint.config.js .node-version bunfig.toml .gitignore pnpm-lock.yaml
@@ -261,7 +263,7 @@ git commit -m "feat: initialize pnpm workspace monorepo scaffolding"
 - Create: `packages/shared-types/tests/errors.test.ts`
 - Modify: `tsconfig.build.json`
 
-- [ ] **Step 1: Create package.json and tsconfig.json for shared-types**
+- [x] **Step 1: Create package.json and tsconfig.json for shared-types**
 
 `packages/shared-types/package.json`:
 ```json
@@ -307,7 +309,7 @@ Add reference to `tsconfig.build.json`:
 }
 ```
 
-- [ ] **Step 2: Write failing test for error classes**
+- [x] **Step 2: Write failing test for error classes**
 
 `packages/shared-types/tests/errors.test.ts`:
 ```ts
