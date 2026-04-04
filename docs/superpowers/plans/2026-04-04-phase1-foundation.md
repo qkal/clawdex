@@ -146,7 +146,7 @@ packages:
   - "packages/*"
 ```
 
-- [ ] **Step 3: Create base tsconfig.json**
+- [x] **Step 3: Create base tsconfig.json**
 
 ```json
 {
