@@ -181,7 +181,7 @@ This file is empty initially — project references are added as packages are cr
 }
 ```
 
-- [ ] **Step 5: Create eslint.config.js**
+- [x] **Step 5: Create eslint.config.js**
 
 ```js
 import tseslint from "typescript-eslint";
