@@ -1,4 +1,4 @@
-import type { Event, EventMsg } from "@clawdex/shared-types";
+import type { Event, EventMsg, SessionSnapshot, ChatMessage } from "@clawdex/shared-types";
 import {
   messages,
   streamingDelta,
@@ -16,6 +16,32 @@ export function routeEvent(event: Event): void {
 
   switch (msg.type) {
     case "connection_ready":
+      // Restore session state if reconnecting
+      if (msg.activeSession) {
+        activeSnapshot.set(msg.activeSession);
+        // Convert ChatMessage[] to UIMessage[]
+        const uiMessages: UIMessage[] = msg.activeSession.messages.map((chatMsg) => ({
+          id: chatMsg.id,
+          role: chatMsg.role,
+          content: chatMsg.content,
+          timestamp: chatMsg.timestamp,
+          turnId: chatMsg.turnId,
+          streaming: false,
+          toolCalls: chatMsg.toolCalls?.map((tc) => ({
+            callId: tc.callId,
+            tool: tc.tool,
+            args: tc.args,
+            output: tc.output,
+            success: tc.success,
+            status: "complete" as const,
+          })),
+        }));
+        messages.set(uiMessages);
+      }
+      // Restore streaming state if there's an active turn
+      if (msg.activeTurn) {
+        isStreaming.set(true);
+      }
       connectionStatus.set("connected");
       break;
 
@@ -25,19 +51,22 @@ export function routeEvent(event: Event): void {
       break;
 
     case "agent_message_delta":
-      streamingDelta.update((d) => d + (msg as any).delta);
+      streamingDelta.update((d) => d + msg.delta);
       break;
 
     case "agent_message": {
       isStreaming.set(false);
       const delta = get(streamingDelta);
       streamingDelta.set("");
+      const uniqueId = typeof crypto !== "undefined" && crypto.randomUUID
+        ? `msg-${crypto.randomUUID()}`
+        : `msg-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
       messages.update((msgs) => [
         ...msgs,
         {
-          id: `msg-${Date.now()}`,
+          id: uniqueId,
           role: "assistant",
-          content: (msg as any).message || delta,
+          content: msg.message || delta,
           timestamp: new Date().toISOString(),
           streaming: false,
         },
@@ -56,19 +85,18 @@ export function routeEvent(event: Event): void {
       break;
 
     case "tool_call_begin": {
-      const tc = msg as any;
       messages.update((msgs) => {
         return [
           ...msgs,
           {
-            id: `tc-${tc.callId}`,
+            id: `tc-${msg.callId}`,
             role: "system" as const,
-            content: `Tool: ${tc.tool}`,
+            content: `Tool: ${msg.tool}`,
             timestamp: new Date().toISOString(),
             toolCalls: [{
-              callId: tc.callId,
-              tool: tc.tool,
-              args: tc.args,
+              callId: msg.callId,
+              tool: msg.tool,
+              args: msg.args,
               status: "running" as const,
             }],
           },
@@ -78,15 +106,14 @@ export function routeEvent(event: Event): void {
     }
 
     case "tool_call_end": {
-      const tc = msg as any;
       messages.update((msgs) =>
         msgs.map((m) => {
-          if (m.toolCalls?.[0]?.callId === tc.callId) {
+          if (m.toolCalls?.[0]?.callId === msg.callId) {
             return {
               ...m,
               toolCalls: m.toolCalls!.map((t) =>
-                t.callId === tc.callId
-                  ? { ...t, output: tc.output, success: tc.success, status: "complete" as const }
+                t.callId === msg.callId
+                  ? { ...t, output: msg.output, success: msg.success, status: "complete" as const }
                   : t
               ),
             };
@@ -98,21 +125,102 @@ export function routeEvent(event: Event): void {
     }
 
     case "session_list":
-      sessionList.set((msg as any).sessions);
+      sessionList.set(msg.sessions);
       break;
 
     case "session_created": {
-      const created = msg as any;
-      activeSessionId.set(created.sessionId);
+      activeSessionId.set(msg.sessionId);
       break;
     }
 
-    case "session_loaded":
-      activeSnapshot.set((msg as any).session);
+    case "session_loaded": {
+      const snapshot = msg.session;
+      // Transform ChatMessage[] to UIMessage[]
+      const uiMessages: UIMessage[] = snapshot.messages.map((chatMsg) => ({
+        id: chatMsg.id,
+        role: chatMsg.role,
+        content: chatMsg.content,
+        timestamp: chatMsg.timestamp,
+        turnId: chatMsg.turnId,
+        streaming: false,
+        toolCalls: chatMsg.toolCalls?.map((tc) => ({
+          callId: tc.callId,
+          tool: tc.tool,
+          args: tc.args,
+          output: tc.output,
+          success: tc.success,
+          status: "complete" as const,
+        })),
+      }));
+      messages.set(uiMessages);
+      activeSnapshot.set(snapshot);
+      break;
+    }
+
+    case "agent_reasoning_delta":
+      // Update the last assistant message with incremental reasoning
+      messages.update((msgs) => {
+        const lastIdx = msgs.length - 1;
+        if (lastIdx >= 0 && msgs[lastIdx].role === "assistant") {
+          const updated = [...msgs];
+          updated[lastIdx] = {
+            ...updated[lastIdx],
+            reasoning: (updated[lastIdx].reasoning || "") + msg.delta,
+          };
+          return updated;
+        }
+        return msgs;
+      });
+      break;
+
+    case "agent_reasoning":
+      // Set final reasoning on the last assistant message
+      messages.update((msgs) => {
+        const lastIdx = msgs.length - 1;
+        if (lastIdx >= 0 && msgs[lastIdx].role === "assistant") {
+          const updated = [...msgs];
+          updated[lastIdx] = {
+            ...updated[lastIdx],
+            reasoning: msg.summary,
+          };
+          return updated;
+        }
+        return msgs;
+      });
+      break;
+
+    case "exec_approval_request":
+      // Log approval request - UI implementation pending
+      console.log("[clawdex] Exec approval request:", {
+        callId: msg.callId,
+        command: msg.command,
+        cwd: msg.cwd,
+        risk: msg.risk,
+      });
+      break;
+
+    case "patch_approval_request":
+      // Log approval request - UI implementation pending
+      console.log("[clawdex] Patch approval request:", {
+        callId: msg.callId,
+        path: msg.path,
+      });
+      break;
+
+    case "mcp_elicitation_request":
+      // Log approval request - UI implementation pending
+      console.log("[clawdex] MCP elicitation request:", {
+        requestId: msg.requestId,
+        serverName: msg.serverName,
+        message: msg.message,
+      });
       break;
 
     case "error":
-      console.error("[clawdex]", (msg as any).message);
+      console.error("[clawdex]", msg.message);
+      if (msg.fatal) {
+        connectionStatus.set("disconnected");
+      }
       break;
   }
 }
