@@ -1,4 +1,5 @@
 import type { IAuthProvider, AuthStatus, AuthToken } from "@clawdex/shared-types";
+import { AuthError } from "@clawdex/shared-types";
 import { TokenStore, type StoredTokens } from "./token-store.js";
 import { startCallbackServer } from "./callback-server.js";
 
@@ -40,19 +41,19 @@ export class OAuthAuthProvider implements IAuthProvider {
   async getToken(): Promise<AuthToken> {
     const stored = await this.tokenStore.load();
     if (!stored) {
-      return { token: "", expiresAt: null };
+      return { token: "" };
     }
 
     // Check if token is expired and try refresh
     if (this.tokenStore.isExpired(stored.expiresAt) && stored.refreshToken) {
       const refreshed = await this.refreshToken(stored.refreshToken);
       if (refreshed) {
-        return { token: refreshed.accessToken, expiresAt: refreshed.expiresAt ?? null };
+        return { token: refreshed.accessToken, expiresAt: refreshed.expiresAt };
       }
-      return { token: "", expiresAt: null };
+      return { token: "" };
     }
 
-    return { token: stored.accessToken, expiresAt: stored.expiresAt ?? null };
+    return { token: stored.accessToken, expiresAt: stored.expiresAt };
   }
 
   async getStatus(): Promise<AuthStatus> {

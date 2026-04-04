@@ -6,7 +6,7 @@ export interface AuthStatus {
 
 export interface AuthToken {
   token: string;
-  expiresAt?: Date;
+  expiresAt?: string; // ISO 8601 date string
 }
 
 export interface IAuthProvider {
