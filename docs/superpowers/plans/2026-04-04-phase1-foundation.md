@@ -263,7 +263,7 @@ git commit -m "feat: initialize pnpm workspace monorepo scaffolding"
 - Create: `packages/shared-types/tests/errors.test.ts`
 - Modify: `tsconfig.build.json`
 
-- [ ] **Step 1: Create package.json and tsconfig.json for shared-types**
+- [x] **Step 1: Create package.json and tsconfig.json for shared-types**
 
 `packages/shared-types/package.json`:
 ```json
