@@ -115,6 +115,9 @@ importers:
       '@clawdex/testkit':
         specifier: workspace:*
         version: link:../testkit
+      '@clawdex/tools':
+        specifier: workspace:*
+        version: link:../tools
       typescript:
         specifier: ^5.8.3
         version: 5.9.3

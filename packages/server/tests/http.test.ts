@@ -1,6 +1,8 @@
 import { describe, test, expect, afterEach } from "bun:test";
 import { createServer } from "../src/http.js";
 import { ClawdexEngine } from "@clawdex/core";
+import { createTestConfig, MockSandbox } from "@clawdex/testkit";
+import { ToolRegistry } from "@clawdex/tools";
 import type { Server } from "bun";
 
 let server: Server | null = null;
@@ -12,8 +14,19 @@ afterEach(() => {
   }
 });
 
+const mockAuthProvider = {
+  getToken: async () => ({ token: "test-api-key", expiresAt: null }),
+  getStatus: async () => ({ authenticated: true, method: "api_key" as const }),
+  logout: async () => {},
+};
+
 function makeServer(port: number = 0) {
-  const engine = new ClawdexEngine();
+  const engine = new ClawdexEngine({
+    config: createTestConfig(),
+    authProvider: mockAuthProvider,
+    sandbox: new MockSandbox(),
+    toolRegistry: new ToolRegistry(),
+  });
   const token = "test-token-12345";
   server = createServer({
     engine,
