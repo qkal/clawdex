@@ -16,6 +16,8 @@ export interface EngineOptions {
   toolRegistry: ToolRegistry;
   /** Base directory for session storage. Defaults to ~/.clawdex/sessions/ */
   sessionsDir?: string;
+  /** Base directory for memories storage. When set, memories are injected into system prompts. */
+  memoriesDir?: string;
 }
 
 /** Internal state of a turn in progress. */
