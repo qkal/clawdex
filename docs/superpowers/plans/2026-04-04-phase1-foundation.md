@@ -109,7 +109,7 @@ packages/testkit/
 - Create: `bunfig.toml`
 - Modify: `.gitignore`
 
-- [ ] **Step 1: Create root package.json**
+- [x] **Step 1: Create root package.json**
 
 ```json
 {
