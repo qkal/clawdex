@@ -29,6 +29,16 @@ importers:
         specifier: workspace:*
         version: link:../shared-types
 
+  packages/tools:
+    dependencies:
+      '@clawdex/shared-types':
+        specifier: workspace:*
+        version: link:../shared-types
+    devDependencies:
+      '@clawdex/testkit':
+        specifier: workspace:*
+        version: link:../testkit
+
 packages:
 
   '@types/bun@1.3.11':
