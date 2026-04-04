@@ -241,7 +241,7 @@ pnpm install
 ```
 Expected: clean install, `pnpm-lock.yaml` updated, no errors.
 
-- [ ] **Step 9: Commit**
+- [x] **Step 9: Commit**
 
 ```bash
 git add package.json pnpm-workspace.yaml tsconfig.json tsconfig.build.json eslint.config.js .node-version bunfig.toml .gitignore pnpm-lock.yaml
