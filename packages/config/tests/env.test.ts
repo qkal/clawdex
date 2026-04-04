@@ -46,6 +46,12 @@ describe("resolveEnvOverrides", () => {
     expect((overrides.auth as { base_url: string })?.base_url).toBe("http://localhost:4000/v1");
   });
 
+  test("maps CLAWDEX_HOST to server.host", () => {
+    process.env.CLAWDEX_HOST = "0.0.0.0";
+    const overrides = resolveEnvOverrides();
+    expect((overrides.server as { host: string })?.host).toBe("0.0.0.0");
+  });
+
   test("returns empty object when no env vars set", () => {
     delete process.env.CLAWDEX_MODEL;
     delete process.env.CLAWDEX_PORT;

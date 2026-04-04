@@ -70,6 +70,15 @@ export class TurnRunner {
       const { textContent, reasoningContent, toolCalls, usage, error } =
         await this.processStream(currentMessages);
 
+      if (this.interrupted) {
+        await this.opts.emitEvent({
+          type: "turn_aborted",
+          turnId: this.opts.turnId,
+          reason: "user_interrupted",
+        } as EventMsg);
+        return;
+      }
+
       if (error) {
         await this.opts.emitEvent({
           type: "error",
@@ -123,6 +132,15 @@ export class TurnRunner {
       };
 
       for (const tc of toolCalls) {
+        if (this.interrupted) {
+          await this.opts.emitEvent({
+            type: "turn_aborted",
+            turnId: this.opts.turnId,
+            reason: "user_interrupted",
+          } as EventMsg);
+          return;
+        }
+
         let args: unknown;
         try {
           args = JSON.parse(tc.arguments);
@@ -147,6 +165,15 @@ export class TurnRunner {
           tool: tc.name,
           args,
         };
+
+        if (this.interrupted) {
+          await this.opts.emitEvent({
+            type: "turn_aborted",
+            turnId: this.opts.turnId,
+            reason: "user_interrupted",
+          } as EventMsg);
+          return;
+        }
 
         await this.opts.emitEvent({
           type: "tool_call_begin",
@@ -180,10 +207,11 @@ export class TurnRunner {
       }
     }
 
-    // If we exhausted tool rounds, complete with what we have
+    // If we exhausted tool rounds, emit abort event
     await this.opts.emitEvent({
-      type: "turn_complete",
+      type: "turn_aborted",
       turnId: this.opts.turnId,
+      reason: "maxToolRounds exhausted",
       usage: {
         inputTokens: totalInputTokens,
         outputTokens: totalOutputTokens,

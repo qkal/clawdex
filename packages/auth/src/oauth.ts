@@ -82,7 +82,7 @@ export class OAuthAuthProvider implements IAuthProvider {
     if (!refreshed) {
       throw new AuthError("Token refresh failed.");
     }
-    return { token: refreshed.accessToken };
+    return { token: refreshed.accessToken, expiresAt: refreshed.expiresAt };
   }
 
   async logout(): Promise<void> {

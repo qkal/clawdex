@@ -1,6 +1,6 @@
 import { describe, test, expect, beforeEach } from "bun:test";
 import { Session } from "../src/session.js";
-import type { ChatMessage, TokenUsage } from "@clawdex/shared-types";
+import type { ChatMessage } from "@clawdex/shared-types";
 
 describe("Session", () => {
   let session: Session;

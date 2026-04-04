@@ -14,6 +14,7 @@ export interface SessionCreateOptions {
   id?: string;
   name?: string;
   createdAt?: string;
+  lastActiveAt?: string;
 }
 
 export class Session {
@@ -32,7 +33,7 @@ export class Session {
   constructor(opts: SessionCreateOptions) {
     this.id = opts.id ?? nanoid(12);
     this.createdAt = opts.createdAt ?? new Date().toISOString();
-    this.lastActiveAt = this.createdAt;
+    this.lastActiveAt = opts.lastActiveAt ?? this.createdAt;
     this.workingDir = opts.workingDir;
     this.model = opts.model;
     this.sandboxPolicy = opts.sandboxPolicy;
@@ -64,15 +65,18 @@ export class Session {
 
   addDiffs(diffs: FileDiff[]): void {
     this._diffs.push(...diffs);
+    this.lastActiveAt = new Date().toISOString();
   }
 
   setName(name: string): void {
     this.name = name;
+    this.lastActiveAt = new Date().toISOString();
   }
 
   /** Replace entire message history (used by compact). */
   replaceMessages(messages: ChatMessage[]): void {
     this._messages = [...messages];
+    this.lastActiveAt = new Date().toISOString();
   }
 
   /** Remove and return all messages belonging to the most recent turnId. */
@@ -97,6 +101,7 @@ export class Session {
       }
       return true;
     });
+    this.lastActiveAt = new Date().toISOString();
     return removed;
   }
 

@@ -69,8 +69,21 @@ describe("ClawdexEngine", () => {
 
   test("deleteSession removes session and persisted file", async () => {
     const session = await engine.createSession({ workingDir: "/tmp" });
+    await engine.saveSession(session.id);
+    const filePath = join(sessionsDir, `${session.id}.json`);
+    // Verify file exists
+    const { access } = await import("node:fs/promises");
+    await access(filePath); // Throws if file doesn't exist
     await engine.deleteSession(session.id);
     expect(engine.getSession(session.id)).toBeNull();
+    // Verify file is deleted
+    let fileExists = true;
+    try {
+      await access(filePath);
+    } catch {
+      fileExists = false;
+    }
+    expect(fileExists).toBe(false);
   });
 
   test("setSessionName updates name", async () => {

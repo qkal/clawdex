@@ -30,8 +30,8 @@ describe("MockLLMClient", () => {
   test("tracks call history", async () => {
     const client = new MockLLMClient({ responses: ["ok"] });
 
-    for await (const _ of client.stream("first")) { /* consume */ }
-    for await (const _ of client.stream("second")) { /* consume */ }
+    for await (const chunk of client.stream("first")) { void chunk; }
+    for await (const chunk of client.stream("second")) { void chunk; }
 
     expect(client.history).toHaveLength(2);
     expect(client.history[0]).toBe("first");

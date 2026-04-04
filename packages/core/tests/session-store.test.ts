@@ -74,6 +74,7 @@ describe("SessionStore", () => {
 
   test("prune removes sessions beyond maxSessions", async () => {
     // Create 3 sessions with staggered timestamps
+    const sessions: Session[] = [];
     for (let i = 0; i < 3; i++) {
       const s = new Session({
         workingDir: "/tmp",
@@ -82,11 +83,17 @@ describe("SessionStore", () => {
         createdAt: new Date(2026, 0, i + 1).toISOString(),
       });
       s.setName(`session-${i}`);
+      // Update lastActiveAt to control sort order (most recent first)
+      s.lastActiveAt = new Date(2026, 0, i + 1).toISOString();
       await store.save(s);
+      sessions.push(s);
     }
 
     await store.prune({ maxSessions: 2 });
     const list = await store.list();
     expect(list).toHaveLength(2);
+    // Most recent 2 should remain (session-2 and session-1)
+    const remainingNames = list.map(s => s.name).sort();
+    expect(remainingNames).toEqual(["session-1", "session-2"]);
   });
 });

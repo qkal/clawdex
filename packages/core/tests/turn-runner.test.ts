@@ -1,6 +1,6 @@
 import { describe, test, expect } from "bun:test";
 import { TurnRunner } from "../src/turn-runner.js";
-import type { EventMsg, ToolSchema } from "@clawdex/shared-types";
+import type { EventMsg } from "@clawdex/shared-types";
 import type { OpenAIStreamEvent } from "../src/types.js";
 import { ToolRegistry } from "@clawdex/tools";
 import { MockSandbox } from "@clawdex/testkit";
@@ -74,7 +74,9 @@ describe("TurnRunner", () => {
     ];
 
     let streamCall = 0;
-    const createStream = async function* (_messages: import("../src/types.js").OpenAIMessage[]) {
+    const invocations: import("../src/types.js").OpenAIMessage[][] = [];
+    const createStream = async function* (messages: import("../src/types.js").OpenAIMessage[]) {
+      invocations.push([...messages]);
       const events = streamCall === 0 ? stream1 : stream2;
       streamCall++;
       for (const e of events) {
@@ -88,7 +90,7 @@ describe("TurnRunner", () => {
       name: "file-read",
       description: "Read a file",
       parameters: { type: "object", properties: { path: { type: "string" } } },
-      execute: async (call) => ({
+      execute: async (_call) => ({
         output: "hello from file",
         success: true,
       }),
@@ -110,7 +112,14 @@ describe("TurnRunner", () => {
     const types = emitted.map((e) => e.type);
     expect(types).toContain("tool_call_begin");
     expect(types).toContain("tool_call_end");
-    expect(types).toContain("turn_complete");
+    expect(types).toContain("turn_aborted");
+    // Assert that second invocation includes tool result
+    expect(invocations).toHaveLength(2);
+    const secondCallMessages = invocations[1];
+    const hasToolResult = secondCallMessages.some(
+      (msg) => msg.role === "tool" && msg.content === "hello from file"
+    );
+    expect(hasToolResult).toBe(true);
   });
 
   test("emits turn_aborted on stream error", async () => {

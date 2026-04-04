@@ -49,7 +49,7 @@ export function buildSystemPrompt(opts: SystemPromptOptions): string {
   }
 
   if (additionalContext) {
-    sections.push("", additionalContext);
+    sections.push("", "Additional context:", additionalContext);
   }
 
   return sections.join("\n");

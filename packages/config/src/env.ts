@@ -28,7 +28,12 @@ const ENV_MAP: Array<{
   },
   {
     envVar: "CLAWDEX_PORT",
-    path: (v) => ({ server: { port: parseInt(v, 10) } }),
+    path: (v) => {
+      if (!/^\d+$/.test(v)) {
+        throw new Error(`CLAWDEX_PORT must be a valid numeric string, got: ${v}`);
+      }
+      return { server: { port: parseInt(v, 10) } };
+    },
   },
   {
     envVar: "CLAWDEX_BASE_URL",

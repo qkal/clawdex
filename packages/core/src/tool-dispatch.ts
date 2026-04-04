@@ -32,10 +32,11 @@ export async function dispatchToolCall(
       callId: call.callId,
     };
   } catch (err) {
-    const message = err instanceof Error ? err.message : String(err);
+    // Log the original error for debugging but return generic message
+    console.error(`Tool execution failed for ${call.tool}:`, err);
     return {
       callId: call.callId,
-      output: `Tool execution error: ${message}`,
+      output: "Tool execution failed",
       success: false,
     };
   }

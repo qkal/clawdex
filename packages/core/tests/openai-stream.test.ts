@@ -33,10 +33,17 @@ describe("parseSSELine", () => {
 });
 
 describe("createOpenAIStream", () => {
-  function mockFetchResponse(events: string[]): () => Promise<Response> {
-    return async () => {
-      const body = events.join("\n\n") + "\n\n";
-      return new Response(body, {
+  function mockFetchResponse(events: string[]): (url?: string, init?: RequestInit) => Promise<Response> {
+    return async (url?: string, init?: RequestInit) => {
+      const stream = new ReadableStream({
+        start(controller) {
+          for (const event of events) {
+            controller.enqueue(new TextEncoder().encode(`data: ${event}\n\n`));
+          }
+          controller.close();
+        },
+      });
+      return new Response(stream, {
         status: 200,
         headers: { "content-type": "text/event-stream" },
       });
@@ -45,11 +52,11 @@ describe("createOpenAIStream", () => {
 
   test("streams text deltas from SSE events", async () => {
     const events = [
-      'data: {"type":"response.output_text.delta","delta":"Hello "}',
-      'data: {"type":"response.output_text.delta","delta":"world"}',
-      'data: {"type":"response.output_text.done","text":"Hello world"}',
-      'data: {"type":"response.completed","usage":{"input_tokens":10,"output_tokens":5}}',
-      "data: [DONE]",
+      '{"type":"response.output_text.delta","delta":"Hello "}',
+      '{"type":"response.output_text.delta","delta":"world"}',
+      '{"type":"response.output_text.done","text":"Hello world"}',
+      '{"type":"response.completed","usage":{"input_tokens":10,"output_tokens":5}}',
+      "[DONE]",
     ];
 
     const config: OpenAIStreamConfig = {

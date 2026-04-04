@@ -48,7 +48,7 @@ export function compactMessages(
   const result: ChatMessage[] = [
     {
       id: "compact-summary",
-      role: "system",
+      role: "assistant",
       content: `[Previous conversation summary]\n\n${summary}`,
       timestamp: new Date().toISOString(),
     },

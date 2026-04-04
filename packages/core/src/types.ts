@@ -4,10 +4,7 @@ import type {
   ISandbox,
   TokenUsage,
   ChatMessage,
-  SessionSnapshot,
-  SessionSummary,
   FileDiff,
-  ActiveTurnState,
 } from "@clawdex/shared-types";
 import type { ToolRegistry } from "@clawdex/tools";
 

@@ -134,4 +134,21 @@ describe("loadConfig", () => {
     });
     expect(config.model).toBe("o1");
   });
+
+  test("envOverrides take precedence over project and global config", async () => {
+    await writeFile(
+      join(homeDir, ".clawdex", "config.toml"),
+      'model = "gpt-4o"\n',
+    );
+    await writeFile(
+      join(projectDir, ".clawdex", "config.toml"),
+      'model = "gpt-4o-mini"\n',
+    );
+    const config = await loadConfig({
+      homeDir,
+      cwd: projectDir,
+      envOverrides: { model: "ENV_MODEL" },
+    });
+    expect(config.model).toBe("ENV_MODEL");
+  });
 });
