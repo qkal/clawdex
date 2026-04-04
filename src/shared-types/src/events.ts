@@ -46,7 +46,7 @@ export type EventMsg =
   // Turn lifecycle
   | { type: "turn_started"; turnId: string; model: string }
   | { type: "turn_complete"; turnId: string; usage: TokenUsage }
-  | { type: "turn_aborted"; turnId: string; reason: "user_interrupted" | "error" | "shutdown" }
+  | { type: "turn_aborted"; turnId: string; reason: "user_interrupted" | "error" | "shutdown" | "max_tool_rounds" }
   | { type: "token_count"; session: TokenUsage; lastTurn?: TokenUsage }
   // Agent output
   | { type: "agent_message_delta"; delta: string }

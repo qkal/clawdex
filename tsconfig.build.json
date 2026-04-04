@@ -7,7 +7,9 @@
     { "path": "src/testkit" },
     { "path": "src/sandbox" },
     { "path": "src/tools" },
+    { "path": "src/memories" },
     { "path": "src/core" },
+    { "path": "src/server" },
     { "path": "src/cli" },
     { "path": "src/mcp-client" },
     { "path": "src/skills" }

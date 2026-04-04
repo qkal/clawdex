@@ -261,7 +261,10 @@ export class ClawdexEngine {
             toolCalls: toolEvent.callId ? [{
               callId: toolEvent.callId,
               tool: toolEvent.tool || 'unknown',
-              args: {},
+              args: (toolEvent.args as Record<string, unknown>) || {},
+              output: toolEvent.output || '',
+              success: toolEvent.success ?? true,
+              durationMs: toolEvent.durationMs ?? 0,
             }] : undefined,
           });
         }
@@ -296,6 +299,27 @@ export class ClawdexEngine {
 
   interrupt(): void {
     this.activeTurnRunner?.interrupt();
+  }
+
+  // -- Shutdown --
+
+  /**
+   * Gracefully shut down the engine:
+   * 1. Interrupt any active turn so the runner exits cleanly.
+   * 2. Flush all in-memory sessions to disk.
+   * 3. Emit shutdown_complete so listeners can react before the process exits.
+   */
+  async shutdown(): Promise<void> {
+    this.interrupt();
+
+    const flushes = Array.from(this.sessions.values()).map((s) =>
+      this.store.save(s).catch(() => {
+        // Best-effort flush — don't let a single bad session block others.
+      }),
+    );
+    await Promise.all(flushes);
+
+    await this.emit({ type: "shutdown_complete" } as EventMsg);
   }
 
   async undo(sessionId: string): Promise<void> {

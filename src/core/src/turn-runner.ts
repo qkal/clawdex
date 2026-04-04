@@ -141,9 +141,9 @@ export class TurnRunner {
           return;
         }
 
-        let args: unknown;
+        let args: Record<string, unknown>;
         try {
-          args = JSON.parse(tc.arguments);
+          args = JSON.parse(tc.arguments) as Record<string, unknown>;
         } catch (err) {
           const message =
             err instanceof Error ? err.message : "Unknown JSON parse error";
@@ -211,7 +211,7 @@ export class TurnRunner {
     await this.opts.emitEvent({
       type: "turn_aborted",
       turnId: this.opts.turnId,
-      reason: "maxToolRounds exhausted",
+      reason: "max_tool_rounds",
       usage: {
         inputTokens: totalInputTokens,
         outputTokens: totalOutputTokens,

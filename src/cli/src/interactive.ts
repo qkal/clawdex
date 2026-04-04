@@ -86,7 +86,7 @@ export async function runInteractive(args: ParsedArgs): Promise<void> {
   await writeLockFile(lockPath, {
     pid: process.pid,
     host,
-    port: server.port,
+    port: server.port ?? port,
     token,
     cwd: process.cwd(),
     startedAt: new Date().toISOString(),
@@ -99,11 +99,15 @@ export async function runInteractive(args: ParsedArgs): Promise<void> {
     openBrowser(url);
   }
 
-  // Handle graceful shutdown
+  // Handle graceful shutdown: flush engine state before stopping the server.
+  let shuttingDown = false;
   const shutdown = async () => {
+    if (shuttingDown) return;
+    shuttingDown = true;
     console.log("\nShutting down...");
-    await removeLockFile(lockPath);
+    await engine.shutdown();
     server.stop();
+    await removeLockFile(lockPath);
     process.exit(0);
   };
 

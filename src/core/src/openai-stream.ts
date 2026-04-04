@@ -56,7 +56,8 @@ export async function* createOpenAIStream(
   const body = JSON.stringify({
     model: config.model,
     input: config.messages.map((m) => {
-      if ("type" in m && m.type === "function_call") {
+      if (!("role" in m)) {
+        // function_call variant — no role property
         return { type: "function_call", id: m.call_id, name: m.name, arguments: m.arguments };
       }
       if (m.role === "tool") {

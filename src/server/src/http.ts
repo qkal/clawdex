@@ -36,7 +36,7 @@ const MIME_TYPES: Record<string, string> = {
   ".map": "application/json",
 };
 
-export function createServer(config: ServerConfig): Server {
+export function createServer(config: ServerConfig): Server<WsData> {
   const { engine, host, port, token, staticDir, version = "0.0.1" } = config;
   const routeCtx: RouteContext = { engine, serverVersion: version };
   const wsClients = new Set<ServerWebSocket<WsData>>();
