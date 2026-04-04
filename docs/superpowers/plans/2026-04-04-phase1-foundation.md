@@ -216,7 +216,7 @@ export default tseslint.config(
 coverage = false
 ```
 
-- [ ] **Step 7: Update .gitignore**
+- [x] **Step 7: Update .gitignore**
 
 Add these lines to the existing `.gitignore`:
 
