@@ -309,7 +309,7 @@ Add reference to `tsconfig.build.json`:
 }
 ```
 
-- [ ] **Step 2: Write failing test for error classes**
+- [x] **Step 2: Write failing test for error classes**
 
 `packages/shared-types/tests/errors.test.ts`:
 ```ts
