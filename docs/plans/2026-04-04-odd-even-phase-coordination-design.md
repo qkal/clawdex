@@ -25,6 +25,11 @@ Execute project phases in parallel with minimal integration risk by assigning od
 - Checkpoint C: after phases `5 + 6`
 - Final integration validation: after phase `7`
 
+### Artifacts
+
+- [Contract Ledger](../superpowers/contracts/2026-04-04-odd-even-contract-ledger.md)
+- [Checkpoint Log](../superpowers/contracts/2026-04-04-odd-even-checkpoint-log.md)
+
 ## 3. Component Boundaries
 
 ### Stable Contract Surface
@@ -68,3 +73,4 @@ Execute project phases in parallel with minimal integration risk by assigning od
 - Odd and even phase outputs integrate at each checkpoint without unresolved contract deltas.
 - No untracked contract-breaking changes reach subsequent phases.
 - Final regression passes with merged odd/even outputs.
+
