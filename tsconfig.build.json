@@ -9,6 +9,7 @@
     { "path": "packages/tools" },
     { "path": "packages/core" },
     { "path": "packages/cli" },
-    { "path": "packages/mcp-client" }
+    { "path": "packages/mcp-client" },
+    { "path": "packages/skills" }
   ]
 }
