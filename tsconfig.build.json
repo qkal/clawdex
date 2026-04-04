@@ -1,15 +1,15 @@
 {
   "files": [],
   "references": [
-    { "path": "packages/shared-types" },
-    { "path": "packages/config" },
-    { "path": "packages/auth" },
-    { "path": "packages/testkit" },
-    { "path": "packages/sandbox" },
-    { "path": "packages/tools" },
-    { "path": "packages/core" },
-    { "path": "packages/cli" },
-    { "path": "packages/mcp-client" },
-    { "path": "packages/skills" }
+    { "path": "src/shared-types" },
+    { "path": "src/config" },
+    { "path": "src/auth" },
+    { "path": "src/testkit" },
+    { "path": "src/sandbox" },
+    { "path": "src/tools" },
+    { "path": "src/core" },
+    { "path": "src/cli" },
+    { "path": "src/mcp-client" },
+    { "path": "src/skills" }
   ]
 }

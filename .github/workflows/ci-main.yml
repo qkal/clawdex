@@ -22,7 +22,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup
-      - run: pnpm -r --filter "./packages/**" --if-present run lint
+      - run: pnpm -r --filter "./src/**" --if-present run lint
 
   test-all:
     name: Test (unit)
@@ -47,4 +47,4 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup
-      - run: pnpm -r --filter "./packages/**" --if-present run build
+      - run: pnpm -r --filter "./src/**" --if-present run build

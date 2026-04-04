@@ -23,7 +23,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup
-      - run: pnpm -r --filter "./packages/**" --if-present run lint
+      - run: pnpm -r --filter "./src/**" --if-present run lint
 
   test-unit:
     name: Test (unit)
@@ -50,7 +50,7 @@ jobs:
         with:
           fetch-depth: 0
       - uses: ./.github/actions/setup
-      - run: pnpm -r --filter "./packages/**...[origin/${{ github.base_ref }}]" --if-present run build
+      - run: pnpm -r --filter "./src/**...[origin/${{ github.base_ref }}]" --if-present run build
 
   build-web:
     name: Build web UI
@@ -60,4 +60,4 @@ jobs:
         with:
           fetch-depth: 0
       - uses: ./.github/actions/setup
-      - run: pnpm -r --filter "./packages/web...[origin/${{ github.base_ref }}]" --if-present run build
+      - run: pnpm -r --filter "./src/web...[origin/${{ github.base_ref }}]" --if-present run build
