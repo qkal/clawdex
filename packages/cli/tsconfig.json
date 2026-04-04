@@ -1,17 +1,18 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "composite": true,
     "rootDir": "src",
-    "outDir": "dist"
+    "outDir": "dist",
+    "composite": true
   },
   "include": ["src"],
   "references": [
     { "path": "../shared-types" },
     { "path": "../config" },
     { "path": "../auth" },
+    { "path": "../core" },
+    { "path": "../server" },
     { "path": "../tools" },
-    { "path": "../sandbox" },
-    { "path": "../memories" }
+    { "path": "../sandbox" }
   ]
 }

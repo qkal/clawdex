@@ -1,8 +1,11 @@
 {
-  "name": "@clawdex/core",
+  "name": "@clawdex/cli",
   "version": "0.0.1",
   "private": true,
   "type": "module",
+  "bin": {
+    "clawdex": "./src/index.ts"
+  },
   "exports": {
     ".": {
       "import": "./src/index.ts",
@@ -17,10 +20,10 @@
     "@clawdex/shared-types": "workspace:*",
     "@clawdex/config": "workspace:*",
     "@clawdex/auth": "workspace:*",
+    "@clawdex/core": "workspace:*",
+    "@clawdex/server": "workspace:*",
     "@clawdex/tools": "workspace:*",
-    "@clawdex/sandbox": "workspace:*",
-    "@clawdex/memories": "workspace:*",
-    "nanoid": "^5.1.5"
+    "@clawdex/sandbox": "workspace:*"
   },
   "devDependencies": {
     "@clawdex/testkit": "workspace:*",
