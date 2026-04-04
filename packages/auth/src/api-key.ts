@@ -1,40 +1,36 @@
-/**
- * ApiKeyAuthProvider — Stub from Phase 1
- *
- * Simple API key authentication. Full implementation will come
- * in Phase 1 Foundation. This is the minimum needed for Phase 6
- * to reference it in the index exports.
- */
 import type { IAuthProvider, AuthStatus, AuthToken } from "@clawdex/shared-types";
-
-export interface ApiKeyAuthConfig {
-  apiKey: string;
-}
+import { AuthError } from "@clawdex/shared-types";
 
 export class ApiKeyAuthProvider implements IAuthProvider {
-  private readonly apiKey: string;
+  private readonly envVar: string;
 
-  constructor(config: ApiKeyAuthConfig) {
-    this.apiKey = config.apiKey;
-  }
-
-  async getToken(): Promise<AuthToken> {
-    return { token: this.apiKey, expiresAt: null };
+  constructor(envVar: string) {
+    this.envVar = envVar;
   }
 
   async getStatus(): Promise<AuthStatus> {
-    if (!this.apiKey) {
+    const key = process.env[this.envVar];
+    if (!key) {
       return { authenticated: false };
     }
     return { authenticated: true, method: "api_key" };
   }
 
-  async logout(): Promise<void> {
-    // No-op for API key auth
+  async getToken(): Promise<AuthToken> {
+    const key = process.env[this.envVar];
+    if (!key) {
+      throw new AuthError(
+        `API key not found. Set the ${this.envVar} environment variable.`,
+      );
+    }
+    return { token: key };
   }
-}
 
-/** Factory function to create an API key provider from an environment variable. */
-export function createAuthProvider(apiKey: string): ApiKeyAuthProvider {
-  return new ApiKeyAuthProvider({ apiKey });
+  async refresh(): Promise<AuthToken> {
+    return this.getToken();
+  }
+
+  async logout(): Promise<void> {
+    // No-op for API key auth — the key is in the environment
+  }
 }
