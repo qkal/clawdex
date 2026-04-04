@@ -9,6 +9,9 @@
     "preview": "vite preview",
     "typecheck": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json"
   },
+  "dependencies": {
+    "dompurify": "^3.2.3"
+  },
   "devDependencies": {
     "@clawdex/shared-types": "workspace:*",
     "@sveltejs/adapter-static": "^3.0.8",

@@ -22,6 +22,7 @@ user.bazelrc
 build/
 out/
 storybook-static/
+.svelte-kit/
 
 # ignore README for publishing
 codex-cli/README.md
