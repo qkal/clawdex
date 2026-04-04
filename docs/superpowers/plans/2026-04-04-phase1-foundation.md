@@ -1,6 +1,6 @@
 # Phase 1: Foundation — Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [x]`) syntax for tracking.
 
 **Goal:** Set up the pnpm monorepo and build the four foundation packages (`shared-types`, `config`, `auth`, `testkit`) that every other clawdex package depends on.
 
@@ -383,12 +383,12 @@ describe("derived errors", () => {
 });
 ```
 
-- [ ] **Step 3: Run test to verify it fails**
+- [x] **Step 3: Run test to verify it fails**
 
 Run: `cd packages/shared-types && bun test`
 Expected: FAIL — module `../src/errors` does not exist.
 
-- [ ] **Step 4: Implement error classes**
+- [x] **Step 4: Implement error classes**
 
 `packages/shared-types/src/errors.ts`:
 ```ts
@@ -459,12 +459,12 @@ export class ProtocolError extends ClawdexError {
 }
 ```
 
-- [ ] **Step 5: Run test to verify it passes**
+- [x] **Step 5: Run test to verify it passes**
 
 Run: `cd packages/shared-types && bun test`
 Expected: all tests PASS.
 
-- [ ] **Step 6: Write config types**
+- [x] **Step 6: Write config types**
 
 `packages/shared-types/src/config.ts`:
 ```ts
@@ -540,7 +540,7 @@ export interface ClawdexConfig {
 }
 ```
 
-- [ ] **Step 7: Create initial index.ts and verify typecheck**
+- [x] **Step 7: Create initial index.ts and verify typecheck**
 
 `packages/shared-types/src/index.ts`:
 ```ts
@@ -551,7 +551,7 @@ export * from "./config";
 Run: `cd packages/shared-types && bunx tsc --noEmit`
 Expected: no errors.
 
-- [ ] **Step 8: Commit**
+- [x] **Step 8: Commit**
 
 ```bash
 git add packages/shared-types/ tsconfig.build.json
@@ -569,7 +569,7 @@ git commit -m "feat(shared-types): add error classes and config types"
 - Create: `packages/shared-types/tests/tools.test.ts`
 - Modify: `packages/shared-types/src/index.ts`
 
-- [ ] **Step 1: Write failing test for tool types**
+- [x] **Step 1: Write failing test for tool types**
 
 `packages/shared-types/tests/tools.test.ts`:
 ```ts
@@ -614,12 +614,12 @@ describe("ITool interface", () => {
 });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `cd packages/shared-types && bun test tests/tools.test.ts`
 Expected: FAIL — module `../src/tools` does not exist.
 
-- [ ] **Step 3: Implement tool types**
+- [x] **Step 3: Implement tool types**
 
 `packages/shared-types/src/tools.ts`:
 ```ts
@@ -666,7 +666,7 @@ export interface ITool {
 }
 ```
 
-- [ ] **Step 4: Implement sandbox interface**
+- [x] **Step 4: Implement sandbox interface**
 
 `packages/shared-types/src/sandbox.ts`:
 ```ts
@@ -695,7 +695,7 @@ export interface ISandbox {
 }
 ```
 
-- [ ] **Step 5: Implement auth interface**
+- [x] **Step 5: Implement auth interface**
 
 `packages/shared-types/src/auth.ts`:
 ```ts
@@ -718,7 +718,7 @@ export interface IAuthProvider {
 }
 ```
 
-- [ ] **Step 6: Update index.ts exports**
+- [x] **Step 6: Update index.ts exports**
 
 `packages/shared-types/src/index.ts`:
 ```ts
@@ -729,12 +729,12 @@ export * from "./sandbox";
 export * from "./auth";
 ```
 
-- [ ] **Step 7: Run tests and typecheck**
+- [x] **Step 7: Run tests and typecheck**
 
 Run: `cd packages/shared-types && bun test && bunx tsc --noEmit`
 Expected: all tests PASS, no type errors.
 
-- [ ] **Step 8: Commit**
+- [x] **Step 8: Commit**
 
 ```bash
 git add packages/shared-types/
@@ -750,7 +750,7 @@ git commit -m "feat(shared-types): add tool, sandbox, and auth interfaces"
 - Create: `packages/shared-types/tests/events.test.ts`
 - Modify: `packages/shared-types/src/index.ts`
 
-- [ ] **Step 1: Write failing test for protocol types**
+- [x] **Step 1: Write failing test for protocol types**
 
 `packages/shared-types/tests/events.test.ts`:
 ```ts
@@ -869,12 +869,12 @@ describe("supporting types", () => {
 });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `cd packages/shared-types && bun test tests/events.test.ts`
 Expected: FAIL — module `../src/events` does not exist.
 
-- [ ] **Step 3: Implement protocol types**
+- [x] **Step 3: Implement protocol types**
 
 `packages/shared-types/src/events.ts`:
 ```ts
@@ -1071,7 +1071,7 @@ export interface SessionSnapshot {
 }
 ```
 
-- [ ] **Step 4: Update index.ts**
+- [x] **Step 4: Update index.ts**
 
 `packages/shared-types/src/index.ts`:
 ```ts
@@ -1083,12 +1083,12 @@ export * from "./auth";
 export * from "./events";
 ```
 
-- [ ] **Step 5: Run tests and typecheck**
+- [x] **Step 5: Run tests and typecheck**
 
 Run: `cd packages/shared-types && bun test && bunx tsc --noEmit`
 Expected: all tests PASS, no type errors.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add packages/shared-types/
@@ -1103,7 +1103,7 @@ git commit -m "feat(shared-types): add WebSocket protocol types and session type
 - Create: `packages/shared-types/src/skills.ts`
 - Modify: `packages/shared-types/src/index.ts`
 
-- [ ] **Step 1: Implement skill and plugin types**
+- [x] **Step 1: Implement skill and plugin types**
 
 `packages/shared-types/src/skills.ts`:
 ```ts
@@ -1139,19 +1139,19 @@ export interface SkillRegistry {
 }
 ```
 
-- [ ] **Step 2: Update index.ts**
+- [x] **Step 2: Update index.ts**
 
 Add to `packages/shared-types/src/index.ts`:
 ```ts
 export * from "./skills";
 ```
 
-- [ ] **Step 3: Typecheck**
+- [x] **Step 3: Typecheck**
 
 Run: `cd packages/shared-types && bunx tsc --noEmit`
 Expected: no errors.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add packages/shared-types/
@@ -1171,7 +1171,7 @@ git commit -m "feat(shared-types): add skill and plugin manifest types"
 - Create: `packages/config/tests/schema.test.ts`
 - Modify: `tsconfig.build.json`
 
-- [ ] **Step 1: Create package scaffolding**
+- [x] **Step 1: Create package scaffolding**
 
 `packages/config/package.json`:
 ```json
@@ -1229,7 +1229,7 @@ Add reference to `tsconfig.build.json`:
 
 Run: `pnpm install`
 
-- [ ] **Step 2: Write failing test for schema validation**
+- [x] **Step 2: Write failing test for schema validation**
 
 `packages/config/tests/schema.test.ts`:
 ```ts
@@ -1297,12 +1297,12 @@ describe("configSchema", () => {
 });
 ```
 
-- [ ] **Step 3: Run test to verify it fails**
+- [x] **Step 3: Run test to verify it fails**
 
 Run: `cd packages/config && bun test tests/schema.test.ts`
 Expected: FAIL — modules not found.
 
-- [ ] **Step 4: Implement defaults**
+- [x] **Step 4: Implement defaults**
 
 `packages/config/src/defaults.ts`:
 ```ts
@@ -1359,7 +1359,7 @@ export const DEFAULT_CONFIG: ClawdexConfig = {
 };
 ```
 
-- [ ] **Step 5: Implement Zod schema**
+- [x] **Step 5: Implement Zod schema**
 
 `packages/config/src/schema.ts`:
 ```ts
@@ -1470,12 +1470,12 @@ export type { ParseResult } from "./schema";
 export { DEFAULT_CONFIG } from "./defaults";
 ```
 
-- [ ] **Step 6: Run tests to verify they pass**
+- [x] **Step 6: Run tests to verify they pass**
 
 Run: `cd packages/config && bun test tests/schema.test.ts`
 Expected: all tests PASS.
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add packages/config/ tsconfig.build.json pnpm-lock.yaml
@@ -1491,7 +1491,7 @@ git commit -m "feat(config): add Zod schema validation and default config"
 - Create: `packages/config/tests/loader.test.ts`
 - Modify: `packages/config/src/index.ts`
 
-- [ ] **Step 1: Write failing test for config loader**
+- [x] **Step 1: Write failing test for config loader**
 
 `packages/config/tests/loader.test.ts`:
 ```ts
@@ -1630,12 +1630,12 @@ describe("loadConfig", () => {
 });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `cd packages/config && bun test tests/loader.test.ts`
 Expected: FAIL — module `../src/loader` does not exist.
 
-- [ ] **Step 3: Implement config loader**
+- [x] **Step 3: Implement config loader**
 
 `packages/config/src/loader.ts`:
 ```ts
@@ -1764,7 +1764,7 @@ export async function loadConfig(options: LoadConfigOptions): Promise<ClawdexCon
 }
 ```
 
-- [ ] **Step 4: Update index.ts**
+- [x] **Step 4: Update index.ts**
 
 Add to `packages/config/src/index.ts`:
 ```ts
@@ -1772,12 +1772,12 @@ export { loadConfig, findProjectRoot, mergeConfigs } from "./loader";
 export type { LoadConfigOptions } from "./loader";
 ```
 
-- [ ] **Step 5: Run tests to verify they pass**
+- [x] **Step 5: Run tests to verify they pass**
 
 Run: `cd packages/config && bun test tests/loader.test.ts`
 Expected: all tests PASS.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add packages/config/
@@ -1794,7 +1794,7 @@ git commit -m "feat(config): add TOML file discovery, merge, and loading"
 - Modify: `packages/config/src/index.ts`
 - Modify: `packages/config/src/loader.ts`
 
-- [ ] **Step 1: Write failing test for env mapping**
+- [x] **Step 1: Write failing test for env mapping**
 
 `packages/config/tests/env.test.ts`:
 ```ts
@@ -1851,12 +1851,12 @@ describe("resolveEnvOverrides", () => {
 });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `cd packages/config && bun test tests/env.test.ts`
 Expected: FAIL — module `../src/env` does not exist.
 
-- [ ] **Step 3: Implement env mapping**
+- [x] **Step 3: Implement env mapping**
 
 `packages/config/src/env.ts`:
 ```ts
@@ -1931,7 +1931,7 @@ function deepMerge(target: Record<string, any>, source: Record<string, any>): Re
 }
 ```
 
-- [ ] **Step 4: Wire env overrides into loadConfig**
+- [x] **Step 4: Wire env overrides into loadConfig**
 
 Update `packages/config/src/loader.ts` — modify the `loadConfig` function to auto-resolve env overrides when `envOverrides` is not explicitly provided:
 
@@ -1949,19 +1949,19 @@ In `loadConfig`, replace the environment variable section:
   }
 ```
 
-- [ ] **Step 5: Update index.ts**
+- [x] **Step 5: Update index.ts**
 
 Add to `packages/config/src/index.ts`:
 ```ts
 export { resolveEnvOverrides } from "./env";
 ```
 
-- [ ] **Step 6: Run all config tests**
+- [x] **Step 6: Run all config tests**
 
 Run: `cd packages/config && bun test`
 Expected: all tests PASS (schema + loader + env).
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add packages/config/
@@ -1980,7 +1980,7 @@ git commit -m "feat(config): add environment variable mapping and auto-resolutio
 - Create: `packages/auth/tests/api-key.test.ts`
 - Modify: `tsconfig.build.json`
 
-- [ ] **Step 1: Create package scaffolding**
+- [x] **Step 1: Create package scaffolding**
 
 `packages/auth/package.json`:
 ```json
@@ -2036,7 +2036,7 @@ Update `tsconfig.build.json`:
 
 Run: `pnpm install`
 
-- [ ] **Step 2: Write failing test**
+- [x] **Step 2: Write failing test**
 
 `packages/auth/tests/api-key.test.ts`:
 ```ts
@@ -2095,12 +2095,12 @@ describe("ApiKeyAuthProvider", () => {
 });
 ```
 
-- [ ] **Step 3: Run test to verify it fails**
+- [x] **Step 3: Run test to verify it fails**
 
 Run: `cd packages/auth && bun test`
 Expected: FAIL — module `../src/api-key` does not exist.
 
-- [ ] **Step 4: Implement API key provider**
+- [x] **Step 4: Implement API key provider**
 
 `packages/auth/src/api-key.ts`:
 ```ts
@@ -2142,7 +2142,7 @@ export class ApiKeyAuthProvider implements IAuthProvider {
 }
 ```
 
-- [ ] **Step 5: Create index.ts and OAuth stub**
+- [x] **Step 5: Create index.ts and OAuth stub**
 
 `packages/auth/src/oauth.ts`:
 ```ts
@@ -2189,12 +2189,12 @@ export function createAuthProvider(method: AuthMethod, apiKeyEnv?: string): IAut
 }
 ```
 
-- [ ] **Step 6: Run tests to verify they pass**
+- [x] **Step 6: Run tests to verify they pass**
 
 Run: `cd packages/auth && bun test`
 Expected: all tests PASS.
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add packages/auth/ tsconfig.build.json pnpm-lock.yaml
@@ -2215,7 +2215,7 @@ git commit -m "feat(auth): add API key provider and OAuth stub"
 - Create: `packages/testkit/tests/mock-llm.test.ts`
 - Modify: `tsconfig.build.json`
 
-- [ ] **Step 1: Create package scaffolding**
+- [x] **Step 1: Create package scaffolding**
 
 `packages/testkit/package.json`:
 ```json
@@ -2272,7 +2272,7 @@ Update `tsconfig.build.json`:
 
 Run: `pnpm install`
 
-- [ ] **Step 2: Write failing test for MockLLMClient**
+- [x] **Step 2: Write failing test for MockLLMClient**
 
 `packages/testkit/tests/mock-llm.test.ts`:
 ```ts
@@ -2327,12 +2327,12 @@ describe("MockLLMClient", () => {
 });
 ```
 
-- [ ] **Step 3: Run test to verify it fails**
+- [x] **Step 3: Run test to verify it fails**
 
 Run: `cd packages/testkit && bun test`
 Expected: FAIL — module `../src/mock-llm` does not exist.
 
-- [ ] **Step 4: Implement MockLLMClient**
+- [x] **Step 4: Implement MockLLMClient**
 
 `packages/testkit/src/mock-llm.ts`:
 ```ts
@@ -2378,7 +2378,7 @@ export class MockLLMClient {
 }
 ```
 
-- [ ] **Step 5: Implement MockSandbox**
+- [x] **Step 5: Implement MockSandbox**
 
 `packages/testkit/src/mock-sandbox.ts`:
 ```ts
@@ -2446,7 +2446,7 @@ export class MockSandbox implements ISandbox {
 }
 ```
 
-- [ ] **Step 6: Implement fixtures**
+- [x] **Step 6: Implement fixtures**
 
 `packages/testkit/src/fixtures.ts`:
 ```ts
@@ -2517,7 +2517,7 @@ Update `packages/testkit/package.json` dependencies:
 
 Run: `pnpm install`
 
-- [ ] **Step 7: Create index.ts**
+- [x] **Step 7: Create index.ts**
 
 `packages/testkit/src/index.ts`:
 ```ts
@@ -2535,12 +2535,12 @@ export {
 } from "./fixtures";
 ```
 
-- [ ] **Step 8: Run tests and typecheck**
+- [x] **Step 8: Run tests and typecheck**
 
 Run: `cd packages/testkit && bun test && bunx tsc --noEmit`
 Expected: all tests PASS, no type errors.
 
-- [ ] **Step 9: Run full workspace typecheck and tests**
+- [x] **Step 9: Run full workspace typecheck and tests**
 
 Run from repo root:
 ```bash
@@ -2548,7 +2548,7 @@ pnpm typecheck && pnpm test
 ```
 Expected: all packages pass typecheck and tests.
 
-- [ ] **Step 10: Commit**
+- [x] **Step 10: Commit**
 
 ```bash
 git add packages/testkit/ tsconfig.build.json pnpm-lock.yaml
@@ -2561,28 +2561,28 @@ git commit -m "feat(testkit): add mock LLM client, mock sandbox, and test fixtur
 
 **Files:** None (verification only)
 
-- [ ] **Step 1: Verify full workspace builds and typechecks**
+- [x] **Step 1: Verify full workspace builds and typechecks**
 
 ```bash
 pnpm typecheck
 ```
 Expected: `tsc -b tsconfig.build.json` passes with no errors across all 4 packages.
 
-- [ ] **Step 2: Verify all tests pass**
+- [x] **Step 2: Verify all tests pass**
 
 ```bash
 pnpm test
 ```
 Expected: all test suites pass across shared-types, config, auth, testkit.
 
-- [ ] **Step 3: Verify dependency graph is correct**
+- [x] **Step 3: Verify dependency graph is correct**
 
 ```bash
 pnpm ls --depth=1 -r
 ```
 Expected: Each package shows only its declared dependencies. No unexpected cross-references.
 
-- [ ] **Step 4: Verify imports work across packages**
+- [x] **Step 4: Verify imports work across packages**
 
 Create a quick smoke test (delete after verification):
 ```bash
@@ -2602,7 +2602,7 @@ console.log('All imports OK');
 ```
 Expected: prints all types correctly, "All imports OK".
 
-- [ ] **Step 5: Commit any final adjustments**
+- [x] **Step 5: Commit any final adjustments**
 
 If any fixes were needed during verification, commit them:
 ```bash
