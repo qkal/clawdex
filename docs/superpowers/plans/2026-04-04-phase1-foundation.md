@@ -170,7 +170,7 @@ packages:
 }
 ```
 
-- [ ] **Step 4: Create tsconfig.build.json**
+- [x] **Step 4: Create tsconfig.build.json**
 
 This file is empty initially — project references are added as packages are created in later tasks.
 
