@@ -233,7 +233,7 @@ node_modules/
 *.tsbuildinfo
 ```
 
-- [ ] **Step 8: Install dependencies and verify**
+- [x] **Step 8: Install dependencies and verify**
 
 Run:
 ```bash
