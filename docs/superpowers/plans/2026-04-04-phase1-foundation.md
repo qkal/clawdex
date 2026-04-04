@@ -203,7 +203,7 @@ export default tseslint.config(
 );
 ```
 
-- [ ] **Step 6: Create .node-version and bunfig.toml**
+- [x] **Step 6: Create .node-version and bunfig.toml**
 
 `.node-version`:
 ```
