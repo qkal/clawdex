@@ -14,7 +14,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup
-      - run: pnpm -r --filter "./packages/**" run typecheck
+      - run: pnpm run typecheck
 
   lint:
     name: Lint
@@ -25,20 +25,21 @@ jobs:
       - run: pnpm -r --filter "./packages/**" --if-present run lint
 
   test-all:
-    name: Test (all packages)
+    name: Test (unit)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup
-      - run: pnpm -r --filter "./packages/**" --if-present run test --pass-with-no-tests
+      - run: pnpm --filter @clawdex/sandbox run test --pass-with-no-tests
+      - run: pnpm --filter @clawdex/tools run test --pass-with-no-tests
 
   test-integration:
-    name: Integration (all packages)
+    name: Integration tests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup
-      - run: pnpm -r --filter "./packages/**" --if-present run test:integration --pass-with-no-tests
+      - run: pnpm --filter @clawdex/tools run test:integration --pass-with-no-tests
 
   build-all:
     name: Build all

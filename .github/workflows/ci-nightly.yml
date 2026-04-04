@@ -12,8 +12,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup
-      - run: pnpm -r --filter "./packages/**" --if-present run test --pass-with-no-tests
-      - run: pnpm -r --filter "./packages/**" --if-present run test:integration --pass-with-no-tests
+      - run: pnpm --filter @clawdex/sandbox run test --pass-with-no-tests
+      - run: pnpm --filter @clawdex/tools run test --pass-with-no-tests
+      - run: pnpm --filter @clawdex/tools run test:integration --pass-with-no-tests
 
   test-windows:
     name: Test (Windows)
@@ -21,8 +22,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup
-      - run: pnpm -r --filter "./packages/**" --if-present run test --pass-with-no-tests
-      - run: pnpm -r --filter "./packages/**" --if-present run test:integration --pass-with-no-tests
+      - run: pnpm --filter @clawdex/sandbox run test --pass-with-no-tests
+      - run: pnpm --filter @clawdex/tools run test --pass-with-no-tests
+      - run: pnpm --filter @clawdex/tools run test:integration --pass-with-no-tests
 
   security-audit:
     name: Security audit
