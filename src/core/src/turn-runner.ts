@@ -299,6 +299,16 @@ export class TurnRunner {
             error: event.message,
           };
 
+        case "stream_retrying":
+          // Relay retry feedback to the UI before the stream retries.
+          await this.opts.emitEvent({
+            type: "stream_error",
+            message: event.message,
+            retrying: true,
+            attempt: event.attempt,
+          } as EventMsg);
+          break;
+
         case "response.done":
           break;
       }

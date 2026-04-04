@@ -34,13 +34,25 @@ export function parseSSELine(line: string): OpenAIStreamEvent | null {
   }
 }
 
+/** HTTP status codes that warrant a retry with backoff. */
+const RETRYABLE_STATUSES = new Set([429, 500, 502, 503, 504]);
+
+/** Max retry attempts before surfacing a terminal error. */
+const MAX_RETRIES = 3;
+
 /**
  * Create an async generator that streams OpenAI Responses API events.
- * Accepts an optional fetchFn override for testing.
+ *
+ * Retries automatically on transient HTTP errors (429, 5xx) with exponential
+ * backoff (1 s → 2 s → 4 s, capped at MAX_RETRIES attempts). Before each
+ * retry a `stream_retrying` event is yielded so callers can surface feedback.
+ *
+ * Accepts optional fetchFn and sleepFn overrides for testing.
  */
 export async function* createOpenAIStream(
   config: OpenAIStreamConfig,
   fetchFn: (url: string, init: RequestInit) => Promise<Response> = fetch,
+  sleepFn: (ms: number) => Promise<void> = (ms) => new Promise((r) => setTimeout(r, ms)),
 ): AsyncGenerator<OpenAIStreamEvent> {
   const url = `${config.baseUrl}/responses`;
 
@@ -70,30 +82,47 @@ export async function* createOpenAIStream(
     ...(config.reasoningEffort ? { reasoning: { effort: config.reasoningEffort } } : {}),
   });
 
-  const response = await fetchFn(url, {
+  const requestInit: RequestInit = {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${config.apiKey}`,
     },
     body,
-  });
+  };
 
-  if (!response.ok) {
-    let message = `OpenAI API error: ${response.status}`;
+  // Retry loop — only the initial HTTP handshake is retried.
+  // Once streaming begins, errors are not retryable.
+  let response: Response | null = null;
+  for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
+    const r = await fetchFn(url, requestInit);
+
+    if (r.ok) {
+      response = r;
+      break;
+    }
+
+    let message = `OpenAI API error: ${r.status}`;
     try {
-      const errBody = await response.json() as { error?: { message?: string } };
-      if (errBody.error?.message) {
-        message = errBody.error.message;
-      }
+      const errBody = await r.json() as { error?: { message?: string } };
+      if (errBody.error?.message) message = errBody.error.message;
     } catch {
       // Use status code message
     }
-    yield { type: "response.error", message };
-    return;
+
+    if (!RETRYABLE_STATUSES.has(r.status) || attempt === MAX_RETRIES) {
+      yield { type: "response.error", message };
+      return;
+    }
+
+    // Retryable — yield a transient event so the caller can surface UI feedback,
+    // then sleep with exponential backoff before the next attempt.
+    yield { type: "stream_retrying", attempt: attempt + 1, status: r.status, message };
+    const backoffMs = Math.min(1000 * Math.pow(2, attempt), 4000);
+    await sleepFn(backoffMs);
   }
 
-  if (!response.body) {
+  if (!response?.body) {
     yield { type: "response.error", message: "No response body" };
     return;
   }

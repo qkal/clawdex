@@ -65,7 +65,9 @@ export type OpenAIStreamEvent =
   | { type: "response.function_call_arguments.done"; call_id: string; name: string; arguments: string }
   | { type: "response.completed"; usage: { input_tokens: number; output_tokens: number } }
   | { type: "response.error"; message: string }
-  | { type: "response.done" };
+  | { type: "response.done" }
+  /** Emitted before each retry attempt; consumed by TurnRunner to surface to the UI. */
+  | { type: "stream_retrying"; attempt: number; status: number; message: string };
 
 /** Options for a single turn execution. */
 export interface TurnOptions {

@@ -55,7 +55,7 @@ packages/sandbox/
 - Create: `packages/sandbox/tests/windows.test.ts`
 - Modify: `packages/sandbox/src/factory.ts`
 
-- [ ] **Step 1: Write the failing test (Windows-only)**
+- [x] **Step 1: Write the failing test (Windows-only)**
 
 `packages/sandbox/tests/windows.test.ts`:
 ```typescript
@@ -121,7 +121,7 @@ describeWindows("WindowsSandbox", () => {
 });
 ```
 
-- [ ] **Step 2: Write the WindowsSandbox**
+- [x] **Step 2: Write the WindowsSandbox**
 
 `packages/sandbox/src/windows.ts`:
 ```typescript
@@ -189,12 +189,12 @@ export class WindowsSandbox implements ISandbox {
 }
 ```
 
-- [ ] **Step 3: Run test (on Windows)**
+- [x] **Step 3: Run test (on Windows)**
 
 Run: `cd packages/sandbox && bun test tests/windows.test.ts`
 Expected: All tests PASS on Windows, skip on Linux.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add packages/sandbox/src/windows.ts packages/sandbox/tests/windows.test.ts
@@ -209,7 +209,7 @@ git commit -m "feat(sandbox): add WindowsSandbox with path-based access control"
 - Create: `packages/sandbox/src/linux.ts`
 - Create: `packages/sandbox/tests/linux.test.ts`
 
-- [ ] **Step 1: Write the failing test (Linux-only)**
+- [x] **Step 1: Write the failing test (Linux-only)**
 
 `packages/sandbox/tests/linux.test.ts`:
 ```typescript
@@ -258,7 +258,7 @@ describeLinux("LinuxSandbox", () => {
 });
 ```
 
-- [ ] **Step 2: Write the LinuxSandbox**
+- [x] **Step 2: Write the LinuxSandbox**
 
 `packages/sandbox/src/linux.ts`:
 ```typescript
@@ -318,12 +318,12 @@ export class LinuxSandbox implements ISandbox {
 }
 ```
 
-- [ ] **Step 3: Run test (on Linux)**
+- [x] **Step 3: Run test (on Linux)**
 
 Run: `cd packages/sandbox && bun test tests/linux.test.ts`
 Expected: All tests PASS on Linux, skip on Windows.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add packages/sandbox/src/linux.ts packages/sandbox/tests/linux.test.ts
@@ -339,7 +339,7 @@ git commit -m "feat(sandbox): add LinuxSandbox with path-based access control"
 - Modify: `packages/sandbox/src/index.ts`
 - Modify: `packages/sandbox/tests/factory.test.ts`
 
-- [ ] **Step 1: Update factory.ts**
+- [x] **Step 1: Update factory.ts**
 
 Update `createSandbox` to detect `process.platform` and select the appropriate backend:
 
@@ -382,16 +382,16 @@ export function createSandbox(
 }
 ```
 
-- [ ] **Step 2: Update index.ts and factory test**
+- [x] **Step 2: Update index.ts and factory test**
 
 Add `WindowsSandbox` and `LinuxSandbox` to the index exports (conditionally).
 
-- [ ] **Step 3: Run all sandbox tests**
+- [x] **Step 3: Run all sandbox tests**
 
 Run: `cd packages/sandbox && bun test`
 Expected: Platform-appropriate tests PASS, others skip.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add packages/sandbox/
@@ -408,7 +408,7 @@ git commit -m "feat(sandbox): add platform detection to factory, export all back
 - Create: `.github/workflows/ci-main.yml`
 - Create: `.github/workflows/ci-nightly.yml`
 
-- [ ] **Step 1: Create composite setup action**
+- [x] **Step 1: Create composite setup action**
 
 `.github/actions/setup/action.yml`:
 ```yaml
@@ -435,7 +435,7 @@ runs:
       shell: bash
 ```
 
-- [ ] **Step 2: Create PR CI workflow**
+- [x] **Step 2: Create PR CI workflow**
 
 `.github/workflows/ci-pr.yml`:
 ```yaml
@@ -486,7 +486,7 @@ jobs:
       - run: cd packages/web && pnpm build
 ```
 
-- [ ] **Step 3: Create main CI workflow**
+- [x] **Step 3: Create main CI workflow**
 
 `.github/workflows/ci-main.yml`:
 ```yaml
@@ -530,7 +530,7 @@ jobs:
       - run: cd packages/web && pnpm build
 ```
 
-- [ ] **Step 4: Create nightly CI workflow**
+- [x] **Step 4: Create nightly CI workflow**
 
 `.github/workflows/ci-nightly.yml`:
 ```yaml
@@ -574,7 +574,7 @@ jobs:
       - run: pnpm audit --audit-level=high
 ```
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add .github/
@@ -590,30 +590,30 @@ git commit -m "ci: add PR, main, and nightly CI workflows with composite setup"
 - Modify: `packages/cli/src/interactive.ts`
 - Modify: `packages/core/src/engine.ts`
 
-- [ ] **Step 1: Add shutdown method to ClawdexEngine**
+- [x] **Step 1: Add shutdown method to ClawdexEngine**
 
 Add `async shutdown()` to `ClawdexEngine` that:
 1. Interrupts any active turn
 2. Saves all in-memory sessions
 3. Emits `shutdown_complete` event
 
-- [ ] **Step 2: Add graceful shutdown to server**
+- [x] **Step 2: Add graceful shutdown to server**
 
 Update `createServer` to return a `stop()` function that:
 1. Closes all WebSocket connections with a close frame
 2. Calls `engine.shutdown()`
 3. Stops the Bun server
 
-- [ ] **Step 3: Update CLI shutdown handler**
+- [x] **Step 3: Update CLI shutdown handler**
 
 In `interactive.ts`, ensure the SIGINT/SIGTERM handler calls `server.stop()` (which triggers engine shutdown) before removing the lock file and exiting.
 
-- [ ] **Step 4: Run tests**
+- [x] **Step 4: Run tests**
 
 Run: `pnpm -r run test`
 Expected: All tests PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add packages/core/ packages/server/ packages/cli/
@@ -624,22 +624,22 @@ git commit -m "feat: add graceful shutdown across engine, server, and CLI"
 
 ## Task 6: Error Handling Edge Cases
 
-- [ ] **Step 1: Add stream retry with exponential backoff in TurnRunner**
+- [x] **Step 1: Add stream retry with exponential backoff in TurnRunner**
 
 When `createOpenAIStream` fails with a retryable error (429, 500, 502, 503, 504), retry with exponential backoff (1s, 2s, 4s, max 3 attempts). Emit `stream_error` event with `retrying: true`.
 
-- [ ] **Step 2: Add session file corruption recovery**
+- [x] **Step 2: Add session file corruption recovery**
 
 In `SessionStore.load()`, if JSON parsing fails, log a warning and return null instead of throwing. Optionally move corrupted files to a `.corrupted/` directory.
 
-- [ ] **Step 3: Add WebSocket reconnection handling in web client**
+- [x] **Step 3: Add WebSocket reconnection handling in web client**
 
 Ensure `ClawdexWsClient` handles unexpected disconnects by:
 1. Setting `connectionStatus` to "disconnected"
 2. Running exponential backoff reconnect (already in place from Phase 4)
 3. On reconnect, requesting session state refresh
 
-- [ ] **Step 4: Add OPENAI_API_KEY missing detection**
+- [x] **Step 4: Add OPENAI_API_KEY missing detection**
 
 At CLI startup, if no API key is found (env var unset, no OAuth tokens), print a clear message:
 ```
@@ -647,7 +647,7 @@ No authentication found.
 Set OPENAI_API_KEY environment variable, or run: clawdex auth login
 ```
 
-- [ ] **Step 5: Run tests and commit**
+- [x] **Step 5: Run tests and commit**
 
 ```bash
 pnpm -r run test
@@ -658,28 +658,28 @@ git add -A && git commit -m "fix: add error recovery, retry logic, and auth dete
 
 ## Task 7: Final Verification + Polish
 
-- [ ] **Step 1: Run full monorepo typecheck**
+- [x] **Step 1: Run full monorepo typecheck**
 
 ```bash
 pnpm -r run typecheck
 ```
 Expected: Zero errors.
 
-- [ ] **Step 2: Run full test suite**
+- [x] **Step 2: Run full test suite**
 
 ```bash
 pnpm -r run test
 ```
 Expected: All tests PASS.
 
-- [ ] **Step 3: Build web UI**
+- [x] **Step 3: Build web UI**
 
 ```bash
 cd packages/web && pnpm build
 ```
 Expected: Static build outputs to `packages/web/build/`.
 
-- [ ] **Step 4: End-to-end smoke test**
+- [x] **Step 4: End-to-end smoke test**
 
 Run: `bun packages/cli/src/index.ts --no-open --port 0`
 Expected: Server starts, prints URL. Test with curl:
@@ -687,7 +687,7 @@ Expected: Server starts, prints URL. Test with curl:
 curl http://127.0.0.1:{port}/api/health -H "Authorization: Bearer {token}"
 ```
 
-- [ ] **Step 5: Verify exec mode**
+- [x] **Step 5: Verify exec mode**
 
 Run (requires OPENAI_API_KEY):
 ```bash
@@ -695,7 +695,7 @@ OPENAI_API_KEY=test bun packages/cli/src/index.ts exec --quiet "echo hello"
 ```
 Expected: Outputs response or auth error if key is invalid.
 
-- [ ] **Step 6: Final commit**
+- [x] **Step 6: Final commit**
 
 ```bash
 git add -A && git commit -m "chore: MVP-Complete finalization and polish"
