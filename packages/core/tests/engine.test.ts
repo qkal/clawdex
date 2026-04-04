@@ -10,7 +10,7 @@ import { tmpdir } from "node:os";
 
 // Minimal auth provider for testing
 const mockAuthProvider = {
-  getToken: async () => ({ token: "test-api-key", expiresAt: null }),
+  getToken: async () => ({ token: "test-api-key", expiresAt: undefined }),
   getStatus: async () => ({ authenticated: true, method: "api_key" as const }),
   logout: async () => {},
 };

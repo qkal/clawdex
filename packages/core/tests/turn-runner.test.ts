@@ -7,7 +7,7 @@ import { MockSandbox } from "@clawdex/testkit";
 
 /** Helper: build a mock stream function that yields canned events. */
 function mockStreamFn(events: OpenAIStreamEvent[]) {
-  return async function* () {
+  return async function* (_messages: import("../src/types.js").OpenAIMessage[]) {
     for (const e of events) {
       yield e;
     }
@@ -74,7 +74,7 @@ describe("TurnRunner", () => {
     ];
 
     let streamCall = 0;
-    const createStream = async function* () {
+    const createStream = async function* (_messages: import("../src/types.js").OpenAIMessage[]) {
       const events = streamCall === 0 ? stream1 : stream2;
       streamCall++;
       for (const e of events) {

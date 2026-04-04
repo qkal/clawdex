@@ -6,13 +6,13 @@ import type {
   SessionSummary,
 } from "@clawdex/shared-types";
 import type { ToolRegistry } from "@clawdex/tools";
-import type { EngineOptions, TurnOptions, OpenAIStreamEvent } from "./types.js";
+import type { EngineOptions, TurnOptions, OpenAIMessage } from "./types.js";
 import { Session } from "./session.js";
 import { SessionStore } from "./session-store.js";
 import { TurnRunner } from "./turn-runner.js";
 import { createOpenAIStream } from "./openai-stream.js";
 import { buildSystemPrompt } from "./system-prompt.js";
-import { shouldAutoCompact, buildCompactPrompt, compactMessages } from "./context-manager.js";
+import { shouldAutoCompact, buildCompactPrompt, compactMessages, estimateTokens } from "./context-manager.js";
 import { join } from "node:path";
 import { homedir } from "node:os";
 
@@ -182,8 +182,15 @@ export class ClawdexEngine {
       sandboxPolicy: session.sandboxPolicy,
     });
 
-    // Build message list for API
+    // Build the initial message list: system prompt + conversation history
     const toolSchemas = this.toolRegistry.listSchemas();
+    const initialMessages: OpenAIMessage[] = [
+      { role: "system", content: systemPrompt },
+      ...session.messages.map((m) => ({
+        role: m.role as "user" | "assistant" | "system",
+        content: m.content,
+      })),
+    ];
 
     const runner = new TurnRunner({
       turnId,
@@ -208,18 +215,13 @@ export class ClawdexEngine {
           session.addTokenUsage((e as any).usage);
         }
       },
-      createStream: () =>
+      messages: initialMessages,
+      createStream: (messages) =>
         createOpenAIStream({
           baseUrl: this.config.auth.base_url,
           apiKey: auth.token,
           model,
-          messages: [
-            { role: "system", content: systemPrompt },
-            ...session.messages.map((m) => ({
-              role: m.role as "user" | "assistant" | "system",
-              content: m.content,
-            })),
-          ],
+          messages,
           tools: toolSchemas,
           reasoningEffort: opts.effort,
         }),
@@ -289,12 +291,18 @@ export class ClawdexEngine {
     }
 
     if (summary) {
-      const previousTokens = session.tokenUsage.totalTokens;
+      const previousTokens = session.messages.reduce(
+        (sum, m) => sum + estimateTokens(m.content),
+        0,
+      );
       const lastUserMsg = [...session.messages]
         .reverse()
         .find((m) => m.role === "user");
       session.replaceMessages(compactMessages(summary, lastUserMsg));
-      const newTokens = session.tokenUsage.totalTokens;
+      const newTokens = session.messages.reduce(
+        (sum, m) => sum + estimateTokens(m.content),
+        0,
+      );
 
       await this.emit({
         type: "context_compacted",
