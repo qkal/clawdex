@@ -74,6 +74,6 @@ describe("dispatchToolCall", () => {
 
     const result = await dispatchToolCall(registry, call, ctx);
     expect(result.success).toBe(false);
-    expect(result.output).toContain("boom");
+    expect(result.output).toBe("Tool execution failed");
   });
 });

@@ -112,7 +112,8 @@ describe("TurnRunner", () => {
     const types = emitted.map((e) => e.type);
     expect(types).toContain("tool_call_begin");
     expect(types).toContain("tool_call_end");
-    expect(types).toContain("turn_aborted");
+    expect(types).toContain("turn_complete");
+    expect(types).not.toContain("turn_aborted");
     // Assert that second invocation includes tool result
     expect(invocations).toHaveLength(2);
     const secondCallMessages = invocations[1];

@@ -34,7 +34,7 @@ describe("parseSSELine", () => {
 
 describe("createOpenAIStream", () => {
   function mockFetchResponse(events: string[]): (url?: string, init?: RequestInit) => Promise<Response> {
-    return async (url?: string, init?: RequestInit) => {
+    return async (_url?: string, _init?: RequestInit) => {
       const stream = new ReadableStream({
         start(controller) {
           for (const event of events) {
