@@ -4,7 +4,7 @@ import type { EventMsg, Submission, Event } from "@clawdex/shared-types";
 import { validateToken, extractTokenFromUrl, extractTokenFromHeader } from "./auth-guard.js";
 import { handleRestRequest, type RouteContext } from "./rest-routes.js";
 import { parseSubmission, routeSubmission } from "./ws-handler.js";
-import { readdir, stat } from "node:fs/promises";
+import { stat } from "node:fs/promises";
 import { join, extname } from "node:path";
 
 export interface ServerConfig {

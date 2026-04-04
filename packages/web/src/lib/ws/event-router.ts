@@ -1,10 +1,9 @@
-import type { Event, EventMsg, SessionSnapshot, ChatMessage } from "@clawdex/shared-types";
+import type { Event } from "@clawdex/shared-types";
 import {
   messages,
   streamingDelta,
   isStreaming,
   type UIMessage,
-  type UIToolCall,
 } from "../stores/messages.js";
 import { sessionList, activeSessionId, activeSnapshot } from "../stores/session.js";
 import { connectionStatus } from "../stores/connection.js";

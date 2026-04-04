@@ -1,5 +1,7 @@
 import type { ISandbox } from "@clawdex/shared-types";
+import { LinuxSandbox } from "./linux.js";
 import { NoopSandbox } from "./noop.js";
+import { WindowsSandbox } from "./windows.js";
 
 export interface SandboxFactoryOptions {
   mode: "read-only" | "workspace-write" | "danger-full-access";
@@ -36,14 +38,10 @@ export function createSandbox(
   const networkAccess = opts.networkAccess ?? false;
 
   if (process.platform === "win32") {
-    // Dynamic require to avoid loading Windows-specific code on Linux
-    const { WindowsSandbox } = require("./windows.js");
     return new WindowsSandbox({ writableRoots, networkAccess });
   }
 
   if (process.platform === "linux") {
-    // Dynamic require to avoid loading Linux-specific code on Windows
-    const { LinuxSandbox } = require("./linux.js");
     return new LinuxSandbox({ writableRoots, networkAccess });
   }
 

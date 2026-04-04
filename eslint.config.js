@@ -2,7 +2,16 @@ import tseslint from "typescript-eslint";
 
 export default tseslint.config(
   {
-    ignores: ["**/dist/", "**/node_modules/", "codex-rs/", "sdk/"],
+    ignores: [
+      "**/dist/",
+      "**/node_modules/",
+      "**/.svelte-kit/",
+      "**/build/",
+      ".claude/",
+      ".worktrees/",
+      "codex-rs/",
+      "sdk/",
+    ],
   },
   ...tseslint.configs.recommended,
   {

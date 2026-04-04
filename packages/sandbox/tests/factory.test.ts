@@ -99,7 +99,6 @@ describe("createSandbox", () => {
       expect(writeIn.allowed).toBe(true);
 
       // Write outside root is denied
-      const sep = process.platform === "win32" ? "\\" : "/";
       const outsidePath =
         process.platform === "win32"
           ? "C:\\Windows\\System32\\evil.dll"
