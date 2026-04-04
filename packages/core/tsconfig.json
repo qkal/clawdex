@@ -12,6 +12,8 @@
     { "path": "../auth" },
     { "path": "../tools" },
     { "path": "../sandbox" },
-    { "path": "../memories" }
+    { "path": "../memories" },
+    { "path": "../mcp-client" },
+    { "path": "../skills" }
   ]
 }

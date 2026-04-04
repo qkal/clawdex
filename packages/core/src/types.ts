@@ -21,6 +21,10 @@ export interface EngineOptions {
   sessionsDir?: string;
   /** Base directory for memories storage. When set, memories are injected into system prompts. */
   memoriesDir?: string;
+  /** Optional MCP connection manager for external tool servers. */
+  mcpManager?: import("@clawdex/mcp-client").McpManager;
+  /** Optional skill registry for injecting skill instructions into prompts. */
+  skillRegistry?: import("@clawdex/skills").SkillRegistry;
 }
 
 /** Internal state of a turn in progress. */
