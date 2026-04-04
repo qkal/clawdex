@@ -105,6 +105,9 @@ importers:
 
   packages/testkit:
     dependencies:
+      '@clawdex/config':
+        specifier: workspace:*
+        version: link:../config
       '@clawdex/shared-types':
         specifier: workspace:*
         version: link:../shared-types
