@@ -2,8 +2,6 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 
-import { afterEach, beforeEach } from "@jest/globals";
-
 const originalCodexHome = process.env.CODEX_HOME;
 let currentCodexHome: string | undefined;
 

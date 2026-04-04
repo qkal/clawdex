@@ -2,8 +2,6 @@ import * as child_process from "node:child_process";
 import { EventEmitter } from "node:events";
 import { PassThrough } from "node:stream";
 
-import { describe, expect, it } from "@jest/globals";
-
 jest.mock("node:child_process", () => {
   const actual = jest.requireActual<typeof import("node:child_process")>("node:child_process");
   return { ...actual, spawn: jest.fn() };
