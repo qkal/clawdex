@@ -37,6 +37,37 @@ importers:
         specifier: ^5.8.3
         version: 5.9.3
 
+  packages/cli:
+    dependencies:
+      '@clawdex/auth':
+        specifier: workspace:*
+        version: link:../auth
+      '@clawdex/config':
+        specifier: workspace:*
+        version: link:../config
+      '@clawdex/core':
+        specifier: workspace:*
+        version: link:../core
+      '@clawdex/sandbox':
+        specifier: workspace:*
+        version: link:../sandbox
+      '@clawdex/server':
+        specifier: workspace:*
+        version: link:../server
+      '@clawdex/shared-types':
+        specifier: workspace:*
+        version: link:../shared-types
+      '@clawdex/tools':
+        specifier: workspace:*
+        version: link:../tools
+    devDependencies:
+      '@clawdex/testkit':
+        specifier: workspace:*
+        version: link:../testkit
+      typescript:
+        specifier: ^5.8.3
+        version: 5.9.3
+
   packages/config:
     dependencies:
       '@clawdex/shared-types':
