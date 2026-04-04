@@ -1,31 +1,24 @@
-import { describe, expect, test } from "bun:test";
-import { NoopSandbox } from "../src/noop";
+import { describe, test, expect } from "bun:test";
+import { NoopSandbox } from "../src/noop.js";
 
 describe("NoopSandbox", () => {
-  test("allows all file reads", () => {
+  test("allows all reads", async () => {
     const sandbox = new NoopSandbox();
-    expect(sandbox.checkFileRead("/etc/passwd").allowed).toBe(true);
-    expect(sandbox.checkFileRead("C:\\Windows\\System32").allowed).toBe(true);
+    expect((await sandbox.checkRead("/any/path")).allowed).toBe(true);
   });
 
-  test("allows all file writes", () => {
+  test("allows all writes", async () => {
     const sandbox = new NoopSandbox();
-    expect(sandbox.checkFileWrite("/home/user/file.txt").allowed).toBe(true);
+    expect((await sandbox.checkWrite("/any/path")).allowed).toBe(true);
   });
 
-  test("allows all exec", () => {
+  test("allows all exec", async () => {
     const sandbox = new NoopSandbox();
-    expect(sandbox.checkExec("rm -rf /").allowed).toBe(true);
+    expect((await sandbox.checkExec("rm", ["-rf", "/"])).allowed).toBe(true);
   });
 
-  test("allows all network", () => {
+  test("allows all network", async () => {
     const sandbox = new NoopSandbox();
-    expect(sandbox.checkNetwork("evil.com").allowed).toBe(true);
-  });
-
-  test("has danger-full-access policy", () => {
-    const sandbox = new NoopSandbox();
-    expect(sandbox.policy.type).toBe("danger-full-access");
-    expect(sandbox.policy.networkAccess).toBe(true);
+    expect((await sandbox.checkNetwork("evil.com", 443)).allowed).toBe(true);
   });
 });

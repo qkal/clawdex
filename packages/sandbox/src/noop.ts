@@ -1,25 +1,29 @@
-import type { ISandbox, SandboxPolicy, SandboxCheckResult } from "@clawdex/shared-types";
+import type { ISandbox, SandboxCheckResult } from "@clawdex/shared-types";
 
+/**
+ * NoopSandbox — allows everything. Used for development and
+ * "danger-full-access" mode.
+ */
 export class NoopSandbox implements ISandbox {
-  readonly policy: SandboxPolicy = {
-    type: "danger-full-access",
-    writableRoots: [],
-    networkAccess: true,
-  };
-
-  checkFileRead(_path: string): SandboxCheckResult {
+  async checkRead(_path: string): Promise<SandboxCheckResult> {
     return { allowed: true };
   }
 
-  checkFileWrite(_path: string): SandboxCheckResult {
+  async checkWrite(_path: string): Promise<SandboxCheckResult> {
     return { allowed: true };
   }
 
-  checkExec(_command: string): SandboxCheckResult {
+  async checkExec(
+    _command: string,
+    _args: string[],
+  ): Promise<SandboxCheckResult> {
     return { allowed: true };
   }
 
-  checkNetwork(_host: string): SandboxCheckResult {
+  async checkNetwork(
+    _host: string,
+    _port: number,
+  ): Promise<SandboxCheckResult> {
     return { allowed: true };
   }
 }
