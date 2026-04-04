@@ -56,6 +56,9 @@ export class SessionStore {
       for (const msg of file.messages) {
         session.addMessage(msg);
       }
+      // Restore the persisted lastActiveAt after hydrating messages,
+      // so that addMessage() timestamp side-effects are overwritten.
+      session.lastActiveAt = file.lastActiveAt;
       if (file.tokenUsage) {
         session.addTokenUsage(file.tokenUsage);
       }

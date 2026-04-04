@@ -12,10 +12,11 @@ export interface TurnRunnerOptions {
   sandbox: ISandbox;
   /** Callback to emit events to the session/server layer. */
   emitEvent: (event: EventMsg) => Promise<void>;
-  /** Factory to create the OpenAI stream. Called once per API request (may be called
-   *  multiple times if tool calls create a loop). */
-  createStream: () => AsyncGenerator<OpenAIStreamEvent>;
-  /** Messages to prepend (conversation history). Set by the engine before each loop iteration. */
+  /** Factory to create the OpenAI stream for a given message list. Called once per
+   *  API request (may be called multiple times if tool calls create a loop). */
+  createStream: (messages: OpenAIMessage[]) => AsyncGenerator<OpenAIStreamEvent>;
+  /** Initial messages (system prompt + conversation history). Extended with tool
+   *  call/result pairs as the tool-call loop progresses. Defaults to empty array. */
   messages?: OpenAIMessage[];
   /** Max tool-call loop iterations to prevent infinite loops. */
   maxToolRounds?: number;
@@ -53,6 +54,9 @@ export class TurnRunner {
     let totalInputTokens = 0;
     let totalOutputTokens = 0;
 
+    // Maintain a running message list that grows with each tool-call round
+    const currentMessages: OpenAIMessage[] = [...(this.opts.messages ?? [])];
+
     for (let round = 0; round < this.maxToolRounds; round++) {
       if (this.interrupted) {
         await this.opts.emitEvent({
@@ -64,7 +68,7 @@ export class TurnRunner {
       }
 
       const { textContent, reasoningContent, toolCalls, usage, error } =
-        await this.processStream();
+        await this.processStream(currentMessages);
 
       if (error) {
         await this.opts.emitEvent({
@@ -112,17 +116,36 @@ export class TurnRunner {
         return;
       }
 
-      // Dispatch tool calls
+      // Dispatch tool calls and collect results
       const ctx: ToolContext = {
         workingDir: this.opts.workingDir,
         sandbox: this.opts.sandbox,
       };
 
       for (const tc of toolCalls) {
+        let args: unknown;
+        try {
+          args = JSON.parse(tc.arguments);
+        } catch (err) {
+          const message =
+            err instanceof Error ? err.message : "Unknown JSON parse error";
+          await this.opts.emitEvent({
+            type: "error",
+            message: `Failed to parse tool arguments for "${tc.name}" (${tc.callId}): ${message}`,
+            fatal: false,
+          } as EventMsg);
+          await this.opts.emitEvent({
+            type: "turn_aborted",
+            turnId: this.opts.turnId,
+            reason: "error",
+          } as EventMsg);
+          return;
+        }
+
         const call: ToolCall = {
           callId: tc.callId,
           tool: tc.name,
-          args: JSON.parse(tc.arguments),
+          args,
         };
 
         await this.opts.emitEvent({
@@ -140,10 +163,21 @@ export class TurnRunner {
           output: result.output,
           success: result.success,
         } as EventMsg);
-      }
 
-      // Tool results will be fed back in the next stream iteration
-      // The engine is responsible for rebuilding the message list with tool results
+        // Append function_call item (assistant's request) and its output so
+        // the next API request sees the full tool-call exchange.
+        currentMessages.push({
+          type: "function_call",
+          call_id: tc.callId,
+          name: tc.name,
+          arguments: tc.arguments,
+        });
+        currentMessages.push({
+          role: "tool",
+          tool_call_id: tc.callId,
+          content: result.output,
+        });
+      }
     }
 
     // If we exhausted tool rounds, complete with what we have
@@ -159,7 +193,7 @@ export class TurnRunner {
   }
 
   /** Process a single stream from the API, collecting text, reasoning, and tool calls. */
-  private async processStream(): Promise<{
+  private async processStream(messages: OpenAIMessage[]): Promise<{
     textContent: string;
     reasoningContent: string;
     toolCalls: Array<{ callId: string; name: string; arguments: string }>;
@@ -172,7 +206,7 @@ export class TurnRunner {
     const completedToolCalls: Array<{ callId: string; name: string; arguments: string }> = [];
     let usage = { inputTokens: 0, outputTokens: 0 };
 
-    const stream = this.opts.createStream();
+    const stream = this.opts.createStream(messages);
 
     for await (const event of stream) {
       if (this.interrupted) break;

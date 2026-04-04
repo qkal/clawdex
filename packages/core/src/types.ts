@@ -48,7 +48,9 @@ export type OpenAIMessage =
   | { role: "system"; content: string }
   | { role: "user"; content: string }
   | { role: "assistant"; content: string }
-  | { role: "tool"; tool_call_id: string; content: string };
+  | { role: "tool"; tool_call_id: string; content: string }
+  /** Represents an assistant function-call item in the Responses API input. */
+  | { type: "function_call"; call_id: string; name: string; arguments: string };
 
 /** Parsed streaming event from OpenAI SSE. */
 export type OpenAIStreamEvent =
