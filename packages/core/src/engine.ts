@@ -249,7 +249,7 @@ export class ClawdexEngine {
     const removed = session.popLastTurnMessages();
     const revertedFiles = removed
       .flatMap((m) => m.toolCalls ?? [])
-      .filter((tc) => tc.tool === "file-write" || tc.tool === "apply-patch")
+      .filter((tc) => tc.tool === "file_write" || tc.tool === "apply_patch")
       .map((tc) => tc.args.path as string)
       .filter(Boolean);
 
