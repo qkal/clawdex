@@ -6,6 +6,10 @@
   },
   "include": ["src"],
   "references": [
-    { "path": "../shared-types" }
+    { "path": "../shared-types" },
+    { "path": "../config" },
+    { "path": "../auth" },
+    { "path": "../tools" },
+    { "path": "../sandbox" }
   ]
 }

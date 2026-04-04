@@ -6,6 +6,7 @@
     { "path": "packages/auth" },
     { "path": "packages/testkit" },
     { "path": "packages/sandbox" },
-    { "path": "packages/tools" }
+    { "path": "packages/tools" },
+    { "path": "packages/core" }
   ]
 }
