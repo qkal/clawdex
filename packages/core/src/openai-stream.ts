@@ -3,7 +3,7 @@ import type { OpenAIStreamEvent, OpenAIMessage } from "./types.js";
 export interface OpenAIToolDef {
   name: string;
   description: string;
-  parameters: Record<string, unknown>;
+  parameters: object;
 }
 
 export interface OpenAIStreamConfig {
