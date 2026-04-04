@@ -1,0 +1,15 @@
+{
+  "name": "clawdex",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "pnpm -r run test",
+    "typecheck": "tsc -b tsconfig.build.json",
+    "clean": "pnpm -r run clean"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.0",
+    "@types/bun": "^1.2.0"
+  }
+}
