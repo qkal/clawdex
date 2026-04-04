@@ -13,6 +13,7 @@ import { TurnRunner } from "./turn-runner.js";
 import { createOpenAIStream } from "./openai-stream.js";
 import { buildSystemPrompt } from "./system-prompt.js";
 import { shouldAutoCompact, buildCompactPrompt, compactMessages } from "./context-manager.js";
+import { MemoryStore, buildMemoryContext } from "@clawdex/memories";
 import { join } from "node:path";
 import { homedir } from "node:os";
 
@@ -27,6 +28,7 @@ export class ClawdexEngine {
   private readonly sessions = new Map<string, Session>();
   private readonly listeners = new Map<string, Set<EventHandler>>();
   private activeTurnRunner: TurnRunner | null = null;
+  private readonly memoriesStore?: MemoryStore;
 
   constructor(opts: EngineOptions) {
     this.config = opts.config;
@@ -36,6 +38,9 @@ export class ClawdexEngine {
     const sessionsDir =
       opts.sessionsDir ?? join(homedir(), ".clawdex", "sessions");
     this.store = new SessionStore(sessionsDir);
+    if (opts.memoriesDir) {
+      this.memoriesStore = new MemoryStore(opts.memoriesDir);
+    }
   }
 
   // -- Event Emitter --
@@ -174,12 +179,19 @@ export class ClawdexEngine {
       turnId,
     });
 
+    // Load memory context for system prompt injection
+    const memorySummary = this.memoriesStore
+      ? await this.memoriesStore.getSummary()
+      : null;
+    const memoryContext = buildMemoryContext(memorySummary);
+
     // Build system prompt
     const systemPrompt = buildSystemPrompt({
       config: this.config,
       model,
       workingDir: session.workingDir,
       sandboxPolicy: session.sandboxPolicy,
+      additionalContext: memoryContext || undefined,
     });
 
     // Build message list for API
