@@ -72,6 +72,18 @@ export class OAuthAuthProvider implements IAuthProvider {
     };
   }
 
+  async refresh(): Promise<AuthToken> {
+    const stored = await this.tokenStore.load();
+    if (!stored?.refreshToken) {
+      throw new AuthError("No refresh token available.");
+    }
+    const refreshed = await this.refreshToken(stored.refreshToken);
+    if (!refreshed) {
+      throw new AuthError("Token refresh failed.");
+    }
+    return { token: refreshed.accessToken };
+  }
+
   async logout(): Promise<void> {
     await this.tokenStore.clear();
   }
