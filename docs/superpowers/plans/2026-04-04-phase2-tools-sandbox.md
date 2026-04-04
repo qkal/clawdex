@@ -1,6 +1,6 @@
 # Phase 2: Tools & Sandbox — Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [x]`) syntax for tracking.
 
 **Goal:** Build the `tools` package (file-read, file-write, shell, apply-patch) and the `sandbox` package (NoopSandbox + interface). These are the agent's hands — how it interacts with the filesystem and processes.
 
@@ -64,7 +64,7 @@ packages/sandbox/
 - Create: `packages/sandbox/tests/factory.test.ts`
 - Modify: `tsconfig.build.json`
 
-- [ ] **Step 1: Create package scaffolding**
+- [x] **Step 1: Create package scaffolding**
 
 `packages/sandbox/package.json`:
 ```json
@@ -113,7 +113,7 @@ Add to `tsconfig.build.json` references:
 
 Run: `pnpm install`
 
-- [ ] **Step 2: Write failing test for NoopSandbox**
+- [x] **Step 2: Write failing test for NoopSandbox**
 
 `packages/sandbox/tests/noop.test.ts`:
 ```ts
@@ -150,12 +150,12 @@ describe("NoopSandbox", () => {
 });
 ```
 
-- [ ] **Step 3: Run test to verify it fails**
+- [x] **Step 3: Run test to verify it fails**
 
 Run: `cd packages/sandbox && bun test tests/noop.test.ts`
 Expected: FAIL — module not found.
 
-- [ ] **Step 4: Implement NoopSandbox**
+- [x] **Step 4: Implement NoopSandbox**
 
 `packages/sandbox/src/noop.ts`:
 ```ts
@@ -186,7 +186,7 @@ export class NoopSandbox implements ISandbox {
 }
 ```
 
-- [ ] **Step 5: Write test and implement factory**
+- [x] **Step 5: Write test and implement factory**
 
 `packages/sandbox/tests/factory.test.ts`:
 ```ts
@@ -231,12 +231,12 @@ export { createSandbox } from "./factory";
 export type { SandboxOptions } from "./factory";
 ```
 
-- [ ] **Step 6: Run tests**
+- [x] **Step 6: Run tests**
 
 Run: `cd packages/sandbox && bun test`
 Expected: all tests PASS.
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add packages/sandbox/ tsconfig.build.json pnpm-lock.yaml
@@ -255,7 +255,7 @@ git commit -m "feat(sandbox): add NoopSandbox and createSandbox factory"
 - Create: `packages/tools/tests/file-read.test.ts`
 - Modify: `tsconfig.build.json`
 
-- [ ] **Step 1: Create package scaffolding**
+- [x] **Step 1: Create package scaffolding**
 
 `packages/tools/package.json`:
 ```json
@@ -308,7 +308,7 @@ Add to `tsconfig.build.json` references:
 
 Run: `pnpm install`
 
-- [ ] **Step 2: Write failing test for FileReadTool**
+- [x] **Step 2: Write failing test for FileReadTool**
 
 `packages/tools/tests/file-read.test.ts`:
 ```ts
@@ -393,12 +393,12 @@ describe("FileReadTool", () => {
 });
 ```
 
-- [ ] **Step 3: Run test to verify it fails**
+- [x] **Step 3: Run test to verify it fails**
 
 Run: `cd packages/tools && bun test tests/file-read.test.ts`
 Expected: FAIL — module not found.
 
-- [ ] **Step 4: Implement FileReadTool**
+- [x] **Step 4: Implement FileReadTool**
 
 `packages/tools/src/file-read.ts`:
 ```ts
@@ -455,12 +455,12 @@ export class FileReadTool implements ITool {
 export { FileReadTool } from "./file-read";
 ```
 
-- [ ] **Step 5: Run tests**
+- [x] **Step 5: Run tests**
 
 Run: `cd packages/tools && bun test tests/file-read.test.ts`
 Expected: all tests PASS.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add packages/tools/ tsconfig.build.json pnpm-lock.yaml
@@ -476,7 +476,7 @@ git commit -m "feat(tools): add FileReadTool with sandbox permission checks"
 - Create: `packages/tools/tests/file-write.test.ts`
 - Modify: `packages/tools/src/index.ts`
 
-- [ ] **Step 1: Write failing test**
+- [x] **Step 1: Write failing test**
 
 `packages/tools/tests/file-write.test.ts`:
 ```ts
@@ -544,7 +544,7 @@ describe("FileWriteTool", () => {
 });
 ```
 
-- [ ] **Step 2: Run test, verify failure, implement**
+- [x] **Step 2: Run test, verify failure, implement**
 
 `packages/tools/src/file-write.ts`:
 ```ts
@@ -598,7 +598,7 @@ export class FileWriteTool implements ITool {
 }
 ```
 
-- [ ] **Step 3: Run tests, update index, commit**
+- [x] **Step 3: Run tests, update index, commit**
 
 Add to `packages/tools/src/index.ts`:
 ```ts
@@ -622,7 +622,7 @@ git commit -m "feat(tools): add FileWriteTool with parent directory creation"
 - Create: `packages/tools/tests/shell.test.ts`
 - Modify: `packages/tools/src/index.ts`
 
-- [ ] **Step 1: Write failing test**
+- [x] **Step 1: Write failing test**
 
 `packages/tools/tests/shell.test.ts`:
 ```ts
@@ -727,7 +727,7 @@ describe("ShellTool", () => {
 });
 ```
 
-- [ ] **Step 2: Run test, verify failure, implement**
+- [x] **Step 2: Run test, verify failure, implement**
 
 `packages/tools/src/shell.ts`:
 ```ts
@@ -813,7 +813,7 @@ export class ShellTool implements ITool {
 }
 ```
 
-- [ ] **Step 3: Update index, run tests, commit**
+- [x] **Step 3: Update index, run tests, commit**
 
 Add to `packages/tools/src/index.ts`:
 ```ts
@@ -837,7 +837,7 @@ git commit -m "feat(tools): add ShellTool with timeout and sandbox checks"
 - Create: `packages/tools/tests/apply-patch.test.ts`
 - Modify: `packages/tools/src/index.ts`
 
-- [ ] **Step 1: Write failing test**
+- [x] **Step 1: Write failing test**
 
 `packages/tools/tests/apply-patch.test.ts`:
 ```ts
@@ -945,7 +945,7 @@ describe("ApplyPatchTool", () => {
 });
 ```
 
-- [ ] **Step 2: Run test, verify failure, implement**
+- [x] **Step 2: Run test, verify failure, implement**
 
 `packages/tools/src/apply-patch.ts`:
 ```ts
@@ -1129,7 +1129,7 @@ export class ApplyPatchTool implements ITool {
 }
 ```
 
-- [ ] **Step 3: Update index, run tests, commit**
+- [x] **Step 3: Update index, run tests, commit**
 
 Add to `packages/tools/src/index.ts`:
 ```ts
@@ -1153,7 +1153,7 @@ git commit -m "feat(tools): add ApplyPatchTool with unified diff parsing"
 - Create: `packages/tools/tests/registry.test.ts`
 - Modify: `packages/tools/src/index.ts`
 
-- [ ] **Step 1: Write failing test**
+- [x] **Step 1: Write failing test**
 
 `packages/tools/tests/registry.test.ts`:
 ```ts
@@ -1207,7 +1207,7 @@ describe("ToolRegistry", () => {
 });
 ```
 
-- [ ] **Step 2: Implement ToolRegistry**
+- [x] **Step 2: Implement ToolRegistry**
 
 `packages/tools/src/registry.ts`:
 ```ts
@@ -1257,7 +1257,7 @@ export class ToolRegistry {
 }
 ```
 
-- [ ] **Step 3: Update index, run tests, commit**
+- [x] **Step 3: Update index, run tests, commit**
 
 Update `packages/tools/src/index.ts`:
 ```ts
@@ -1281,14 +1281,14 @@ git commit -m "feat(tools): add ToolRegistry with built-in tool registration"
 
 ## Task 7: Final Verification
 
-- [ ] **Step 1: Run full workspace typecheck and tests**
+- [x] **Step 1: Run full workspace typecheck and tests**
 
 ```bash
 pnpm typecheck && pnpm test
 ```
 Expected: all 6 packages (shared-types, config, auth, testkit, sandbox, tools) pass.
 
-- [ ] **Step 2: Verify cross-package imports**
+- [x] **Step 2: Verify cross-package imports**
 
 ```bash
 cd packages/tools && bun -e "
@@ -1303,7 +1303,7 @@ console.log('Phase 2 OK');
 ```
 Expected: prints tool names, sandbox policy, "Phase 2 OK".
 
-- [ ] **Step 3: Commit any fixes**
+- [x] **Step 3: Commit any fixes**
 
 ```bash
 git add -A && git commit -m "fix: resolve Phase 2 integration issues"

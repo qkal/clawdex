@@ -19,6 +19,7 @@
   },
   "devDependencies": {
     "@clawdex/testkit": "workspace:*",
+    "@clawdex/tools": "workspace:*",
     "typescript": "^5.8.3"
   }
 }

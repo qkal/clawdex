@@ -1,5 +1,3 @@
-import type { Server } from "bun";
-
 export interface CallbackServerResult {
   port: number;
   stop: () => void;
@@ -17,7 +15,7 @@ export async function startCallbackServer(): Promise<CallbackServerResult> {
     resolveCode = resolve;
   });
 
-  const server: Server = Bun.serve({
+  const server = Bun.serve({
     hostname: "127.0.0.1",
     port: 0, // random port
     fetch(req) {
@@ -44,7 +42,7 @@ export async function startCallbackServer(): Promise<CallbackServerResult> {
   });
 
   return {
-    port: server.port,
+    port: server.port!,
     stop: () => server.stop(),
     codePromise,
   };

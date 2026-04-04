@@ -1,11 +1,16 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
+    "composite": true,
     "rootDir": "src",
     "outDir": "dist"
   },
   "include": ["src"],
   "references": [
-    { "path": "../shared-types" }
+    { "path": "../shared-types" },
+    { "path": "../config" },
+    { "path": "../auth" },
+    { "path": "../tools" },
+    { "path": "../sandbox" }
   ]
 }

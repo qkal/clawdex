@@ -10,9 +10,11 @@
     }
   },
   "dependencies": {
-    "@clawdex/shared-types": "workspace:*"
+    "@clawdex/shared-types": "workspace:*",
+    "@clawdex/config": "workspace:*"
   },
   "scripts": {
+    "test": "bun test",
     "typecheck": "tsc --noEmit",
     "clean": "rm -rf dist"
   }
