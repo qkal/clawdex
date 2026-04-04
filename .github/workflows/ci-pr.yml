@@ -15,7 +15,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup
-      - run: pnpm -r run typecheck
+      - run: pnpm -r --filter "./packages/**" run typecheck
 
   lint:
     name: Lint
@@ -23,7 +23,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup
-      - run: pnpm -r run lint
+      - run: pnpm -r --filter "./packages/**" --if-present run lint
 
   test-unit:
     name: Test (changed packages)
@@ -33,25 +33,34 @@ jobs:
         with:
           fetch-depth: 0
       - uses: ./.github/actions/setup
-      - run: pnpm -r --filter '...[origin/main]' run test
+      - run: pnpm -r --filter "./packages/**...[origin/${{ github.base_ref }}]" --if-present run test --pass-with-no-tests
 
-  build-packages:
-    name: Build packages
+  test-integration:
+    name: Integration (changed packages)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: ./.github/actions/setup
-      - run: pnpm -r run build
+      - run: pnpm -r --filter "./packages/**...[origin/${{ github.base_ref }}]" --if-present run test:integration --pass-with-no-tests
+
+  build-packages:
+    name: Build (changed packages)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: ./.github/actions/setup
+      - run: pnpm -r --filter "./packages/**...[origin/${{ github.base_ref }}]" --if-present run build
 
   build-web:
     name: Build web UI
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: ./.github/actions/setup
-      - run: |
-          if [ -d "packages/web" ]; then
-            cd packages/web && pnpm build
-          else
-            echo "packages/web not yet created, skipping"
-          fi
+      - run: pnpm -r --filter "./packages/web...[origin/${{ github.base_ref }}]" --if-present run build
