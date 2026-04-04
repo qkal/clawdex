@@ -139,7 +139,7 @@ packages/testkit/
 }
 ```
 
-- [ ] **Step 2: Create pnpm-workspace.yaml**
+- [x] **Step 2: Create pnpm-workspace.yaml**
 
 ```yaml
 packages:
