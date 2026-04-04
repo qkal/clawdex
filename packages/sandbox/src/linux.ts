@@ -1,4 +1,8 @@
-import type { ISandbox, SandboxCheckResult } from "@clawdex/shared-types";
+import type {
+  ISandbox,
+  SandboxCheckResult,
+  SandboxPolicy,
+} from "@clawdex/shared-types";
 import { resolve, normalize } from "node:path";
 
 export interface LinuxSandboxOptions {
@@ -16,21 +20,27 @@ export interface LinuxSandboxOptions {
  * All roots and checked paths are resolved to absolute, normalized form.
  */
 export class LinuxSandbox implements ISandbox {
+  readonly policy: SandboxPolicy;
   private readonly writableRoots: string[];
   private readonly networkAccess: boolean;
 
   constructor(opts: LinuxSandboxOptions) {
     this.writableRoots = opts.writableRoots.map((r) => normalize(resolve(r)));
     this.networkAccess = opts.networkAccess;
+    this.policy = {
+      type: "workspace-write",
+      writableRoots: this.writableRoots,
+      networkAccess: this.networkAccess,
+    };
   }
 
-  async checkRead(_path: string): Promise<SandboxCheckResult> {
+  checkFileRead(_path: string): SandboxCheckResult {
     // Read access is always allowed — tools need unrestricted read
     // access to inspect the filesystem and project files.
     return { allowed: true };
   }
 
-  async checkWrite(path: string): Promise<SandboxCheckResult> {
+  checkFileWrite(path: string): SandboxCheckResult {
     const normalizedPath = normalize(resolve(path));
 
     for (const root of this.writableRoots) {
@@ -50,19 +60,19 @@ export class LinuxSandbox implements ISandbox {
     };
   }
 
-  async checkExec(
+  checkExec(
     _command: string,
-    _args: string[],
-  ): Promise<SandboxCheckResult> {
+    _args?: string[],
+  ): SandboxCheckResult {
     // For MVP, allow all exec — the approval policy handles dangerous commands.
     // Future: Landlock can restrict which executables can be spawned.
     return { allowed: true };
   }
 
-  async checkNetwork(
+  checkNetwork(
     host: string,
-    _port: number,
-  ): Promise<SandboxCheckResult> {
+    _port?: number,
+  ): SandboxCheckResult {
     if (this.networkAccess) {
       return { allowed: true };
     }
@@ -70,5 +80,14 @@ export class LinuxSandbox implements ISandbox {
       allowed: false,
       reason: `Network access denied: sandbox policy blocks connections to ${host}`,
     };
+  }
+
+  // Back-compat helpers for older call sites/tests.
+  checkRead(path: string): SandboxCheckResult {
+    return this.checkFileRead(path);
+  }
+
+  checkWrite(path: string): SandboxCheckResult {
+    return this.checkFileWrite(path);
   }
 }

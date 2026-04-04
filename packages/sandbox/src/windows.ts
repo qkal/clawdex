@@ -1,4 +1,8 @@
-import type { ISandbox, SandboxCheckResult } from "@clawdex/shared-types";
+import type {
+  ISandbox,
+  SandboxCheckResult,
+  SandboxPolicy,
+} from "@clawdex/shared-types";
 import { resolve, normalize } from "node:path";
 
 export interface WindowsSandboxOptions {
@@ -17,6 +21,7 @@ export interface WindowsSandboxOptions {
  * normalized, lowercase form before comparison.
  */
 export class WindowsSandbox implements ISandbox {
+  readonly policy: SandboxPolicy;
   private readonly writableRoots: string[];
   private readonly networkAccess: boolean;
 
@@ -27,15 +32,20 @@ export class WindowsSandbox implements ISandbox {
       normalize(resolve(r)).toLowerCase(),
     );
     this.networkAccess = opts.networkAccess;
+    this.policy = {
+      type: "workspace-write",
+      writableRoots: this.writableRoots,
+      networkAccess: this.networkAccess,
+    };
   }
 
-  async checkRead(_path: string): Promise<SandboxCheckResult> {
+  checkFileRead(_path: string): SandboxCheckResult {
     // Read access is always allowed — even in workspace-write mode,
     // reads are unrestricted so tools can inspect the filesystem.
     return { allowed: true };
   }
 
-  async checkWrite(path: string): Promise<SandboxCheckResult> {
+  checkFileWrite(path: string): SandboxCheckResult {
     const normalizedPath = normalize(resolve(path)).toLowerCase();
 
     for (const root of this.writableRoots) {
@@ -56,19 +66,19 @@ export class WindowsSandbox implements ISandbox {
     };
   }
 
-  async checkExec(
+  checkExec(
     _command: string,
-    _args: string[],
-  ): Promise<SandboxCheckResult> {
+    _args?: string[],
+  ): SandboxCheckResult {
     // For MVP, allow all exec — the approval policy handles dangerous commands.
     // Future: restrict to allowed executables list via Job Objects.
     return { allowed: true };
   }
 
-  async checkNetwork(
+  checkNetwork(
     host: string,
-    _port: number,
-  ): Promise<SandboxCheckResult> {
+    _port?: number,
+  ): SandboxCheckResult {
     if (this.networkAccess) {
       return { allowed: true };
     }
@@ -76,5 +86,14 @@ export class WindowsSandbox implements ISandbox {
       allowed: false,
       reason: `Network access denied: sandbox policy blocks connections to ${host}`,
     };
+  }
+
+  // Back-compat helpers for older call sites/tests.
+  checkRead(path: string): SandboxCheckResult {
+    return this.checkFileRead(path);
+  }
+
+  checkWrite(path: string): SandboxCheckResult {
+    return this.checkFileWrite(path);
   }
 }
