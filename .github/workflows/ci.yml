@@ -1,4 +1,4 @@
-name: CI
+name: TS CI
 
 on:
   push:
@@ -17,44 +17,8 @@ permissions:
   contents: read
 
 jobs:
-  rust:
-    name: Rust checks
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: codex-rs
-    env:
-      CARGO_TERM_COLOR: always
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Install system dependencies
-        run: sudo apt-get update && sudo apt-get install -y libcap-dev
-
-      - name: Install Rust toolchain
-        uses: dtolnay/rust-toolchain@stable
-        with:
-          toolchain: 1.93.0
-          components: clippy, rustfmt
-
-      - name: Cache cargo
-        uses: Swatinem/rust-cache@v2
-        with:
-          workspaces: |
-            codex-rs -> target
-
-      - name: Format
-        run: cargo fmt --all -- --check
-
-      - name: Clippy
-        run: cargo clippy --workspace --all-targets --locked -- -D warnings
-
-      - name: Tests
-        run: cargo test --workspace --locked --all-targets
-
   sdk:
-    name: SDK TypeScript
+    name: TypeScript SDK (bun)
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -94,6 +58,11 @@ jobs:
           version: 10.29.3
           run_install: false
 
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: 1.1.38
+
       - name: Cache pnpm store
         uses: actions/cache@v4
         with:
@@ -108,8 +77,8 @@ jobs:
       - name: Lint
         run: pnpm run lint
 
-      - name: Test
-        run: pnpm run test --runInBand
+      - name: Test (bun runtime)
+        run: pnpm test
 
       - name: Build
         run: pnpm run build
