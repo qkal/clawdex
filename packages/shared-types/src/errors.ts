@@ -7,9 +7,9 @@ export type ErrorCode =
   | "INTERNAL_ERROR";
 
 export class ClawdexError extends Error {
-  readonly code?: string;
+  readonly code?: ErrorCode;
 
-  constructor(message: string, code?: string) {
+  constructor(message: string, code?: ErrorCode) {
     super(message);
     this.name = "ClawdexError";
     this.code = code;
@@ -17,8 +17,8 @@ export class ClawdexError extends Error {
 }
 
 export class AuthError extends ClawdexError {
-  constructor(message: string, code: string = "AUTH_REQUIRED") {
-    super(message, code);
+  constructor(message: string, code?: ErrorCode) {
+    super(message, code ?? "AUTH_REQUIRED");
     this.name = "AuthError";
   }
 }
@@ -34,7 +34,7 @@ export class ConfigError extends ClawdexError {
 }
 
 export class SessionError extends ClawdexError {
-  constructor(message: string, code?: string) {
+  constructor(message: string, code?: ErrorCode) {
     super(message, code);
     this.name = "SessionError";
   }

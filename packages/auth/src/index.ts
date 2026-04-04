@@ -1,6 +1,5 @@
 import type { IAuthProvider } from "@clawdex/shared-types";
 import { ApiKeyAuthProvider } from "./api-key.js";
-import { OAuthAuthProvider } from "./oauth.js";
 
 export { ApiKeyAuthProvider } from "./api-key.js";
 export { OAuthAuthProvider } from "./oauth.js";

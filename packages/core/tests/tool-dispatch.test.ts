@@ -1,6 +1,6 @@
 import { describe, test, expect } from "bun:test";
 import { dispatchToolCall } from "../src/tool-dispatch.js";
-import type { ITool, ToolCall, ToolResult, ToolContext, ISandbox } from "@clawdex/shared-types";
+import type { ITool, ToolCall, ToolResult, ToolContext } from "@clawdex/shared-types";
 import { ToolRegistry } from "@clawdex/tools";
 import { MockSandbox } from "@clawdex/testkit";
 
@@ -9,7 +9,7 @@ function createMockTool(name: string, handler: (args: Record<string, unknown>) =
     name,
     description: `Mock ${name} tool`,
     parameters: { type: "object", properties: {} },
-    execute: async (call: ToolCall, ctx: ToolContext): Promise<ToolResult> => {
+    execute: async (call: ToolCall, _ctx: ToolContext): Promise<ToolResult> => {
       return {
         output: handler(call.args),
         success: true,

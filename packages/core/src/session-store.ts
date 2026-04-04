@@ -1,4 +1,4 @@
-import { mkdir, readdir, readFile, writeFile, unlink } from "node:fs/promises";
+import { mkdir, readdir, readFile, writeFile, unlink, rename } from "node:fs/promises";
 import { join } from "node:path";
 import { Session } from "./session.js";
 import type { SessionFile } from "./types.js";
@@ -13,6 +13,10 @@ export class SessionStore {
   }
 
   private filePath(id: string): string {
+    // Validate ID to prevent path traversal
+    if (!/^[a-zA-Z0-9_-]+$/.test(id)) {
+      throw new Error(`Invalid session ID: ${id}. Only alphanumeric, hyphen, and underscore characters allowed.`);
+    }
     return join(this.dir, `${id}.json`);
   }
 
@@ -36,7 +40,6 @@ export class SessionStore {
     const tmpPath = this.filePath(session.id) + ".tmp";
     await writeFile(tmpPath, json, "utf-8");
     // Atomic rename
-    const { rename } = await import("node:fs/promises");
     await rename(tmpPath, this.filePath(session.id));
   }
 
@@ -52,13 +55,9 @@ export class SessionStore {
         sandboxPolicy: file.sandboxPolicy,
         name: file.name,
         createdAt: file.createdAt,
+        lastActiveAt: file.lastActiveAt,
       });
-      for (const msg of file.messages) {
-        session.addMessage(msg);
-      }
-      // Restore the persisted lastActiveAt after hydrating messages,
-      // so that addMessage() timestamp side-effects are overwritten.
-      session.lastActiveAt = file.lastActiveAt;
+      session.replaceMessages(file.messages);
       if (file.tokenUsage) {
         session.addTokenUsage(file.tokenUsage);
       }
@@ -112,6 +111,7 @@ export class SessionStore {
   /** Prune old sessions beyond limits. Keeps most recent. */
   async prune(opts: { maxSessions?: number; maxAgeDays?: number }): Promise<void> {
     const summaries = await this.list();
+    const deletedIds = new Set<string>();
 
     // Filter by age first
     if (opts.maxAgeDays !== undefined) {
@@ -119,13 +119,14 @@ export class SessionStore {
       for (const s of summaries) {
         if (new Date(s.lastActiveAt).getTime() < cutoff) {
           await this.delete(s.id);
+          deletedIds.add(s.id);
         }
       }
     }
 
     // Then enforce max count (list is already sorted by lastActiveAt desc)
     if (opts.maxSessions !== undefined) {
-      const remaining = await this.list();
+      const remaining = summaries.filter(s => !deletedIds.has(s.id));
       if (remaining.length > opts.maxSessions) {
         const toDelete = remaining.slice(opts.maxSessions);
         for (const s of toDelete) {

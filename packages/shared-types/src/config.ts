@@ -3,7 +3,7 @@ export interface McpServerConfig {
   args: string[];
   env?: Record<string, string>;
   enabled?: boolean;
-  tools?: Record<string, { approval_mode?: string }>;
+  tools?: Record<string, { approval_mode?: ApprovalPolicy }>;
 }
 
 export interface AuthConfig {

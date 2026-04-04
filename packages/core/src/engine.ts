@@ -52,7 +52,7 @@ export class ClawdexEngine {
   }
 
   async emit(msg: EventMsg): Promise<void> {
-    const handlers = this.listeners.get("event");
+    const handlers = this.listeners.get(msg.type);
     if (handlers) {
       for (const handler of handlers) {
         handler(msg);
@@ -174,6 +174,19 @@ export class ClawdexEngine {
       turnId,
     });
 
+    // Check if we should auto-compact before streaming
+    const totalTokens = session.messages.reduce(
+      (sum, m) => sum + estimateTokens(m.content),
+      0,
+    );
+    if (shouldAutoCompact({
+      totalTokens,
+      contextWindow: this.config.model_context_window,
+      compactThreshold: this.config.model_auto_compact_token_limit / this.config.model_context_window,
+    })) {
+      await this.compact(session.id);
+    }
+
     // Build system prompt
     const systemPrompt = buildSystemPrompt({
       config: this.config,
@@ -208,6 +221,22 @@ export class ClawdexEngine {
             content: (e as any).message,
             timestamp: new Date().toISOString(),
             turnId,
+          });
+        }
+        // Persist tool events
+        if (e.type === "tool_call_end") {
+          const toolEvent = e as any;
+          session.addMessage({
+            id: `msg-${Date.now()}`,
+            role: "assistant",
+            content: `[Tool: ${toolEvent.tool || 'unknown'}] ${toolEvent.output || ''}`,
+            timestamp: new Date().toISOString(),
+            turnId,
+            toolCalls: toolEvent.callId ? [{
+              callId: toolEvent.callId,
+              tool: toolEvent.tool || 'unknown',
+              args: {},
+            }] : undefined,
           });
         }
         // Accumulate token usage
@@ -298,7 +327,8 @@ export class ClawdexEngine {
       const lastUserMsg = [...session.messages]
         .reverse()
         .find((m) => m.role === "user");
-      session.replaceMessages(compactMessages(summary, lastUserMsg));
+      const compactedMessages = compactMessages(summary, lastUserMsg);
+      session.replaceMessages(compactedMessages);
       const newTokens = session.messages.reduce(
         (sum, m) => sum + estimateTokens(m.content),
         0,

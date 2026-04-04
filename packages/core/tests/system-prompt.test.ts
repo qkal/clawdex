@@ -1,6 +1,5 @@
 import { describe, test, expect } from "bun:test";
 import { buildSystemPrompt } from "../src/system-prompt.js";
-import type { ClawdexConfig } from "@clawdex/shared-types";
 import { createTestConfig } from "@clawdex/testkit";
 
 describe("buildSystemPrompt", () => {
