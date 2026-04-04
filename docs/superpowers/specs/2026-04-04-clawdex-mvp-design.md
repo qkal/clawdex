@@ -37,7 +37,7 @@ Clawdex is a TypeScript/Bun rewrite of the OpenAI Codex CLI, forked as an indepe
 
 | Layer | Technology |
 |---|---|
-| Runtime | Bun |
+| Runtime | Bun (backend + tests); Node (SvelteKit dev server via Vite) |
 | Language | TypeScript (strict) |
 | Package manager | pnpm (workspaces) |
 | Test runner | Bun test |
@@ -151,7 +151,7 @@ User-facing entrypoint binary:
 - Handles graceful shutdown, server lock file management.
 
 **web** (depends on: shared-types as devDep)
-SvelteKit app with shadcn-svelte + Tailwind CSS v4. Built to static assets with `@sveltejs/adapter-static`. Communicates with server exclusively via WebSocket + REST. No runtime dependency on backend packages.
+SvelteKit app with shadcn-svelte + Tailwind CSS v4. Uses `@sveltejs/adapter-static` to build to static assets (HTML/JS/CSS) — no SSR at runtime. The Bun server serves these files. SvelteKit's dev server runs on Node (via Vite) during development. Communicates with server exclusively via WebSocket + REST. No runtime dependency on backend packages.
 
 **testkit** (depends on: shared-types)
 Shared test utilities: mock LLM client, mock filesystem, mock sandbox, test fixtures, helpers for setting up test sessions. Used as devDep by all packages.
