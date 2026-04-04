@@ -4,6 +4,14 @@ node_modules
 .pnpm-store
 .pnpm-debug.log
 
+# Packages
+packages/*/dist/
+packages/*/node_modules/
+node_modules/
+
+# Bun
+*.lockb
+
 # Keep pnpm-lock.yaml
 !pnpm-lock.yaml
 
