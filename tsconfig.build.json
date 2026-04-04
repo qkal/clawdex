@@ -8,6 +8,7 @@
     { "path": "packages/sandbox" },
     { "path": "packages/tools" },
     { "path": "packages/core" },
-    { "path": "packages/cli" }
+    { "path": "packages/cli" },
+    { "path": "packages/mcp-client" }
   ]
 }
