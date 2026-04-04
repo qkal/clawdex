@@ -243,6 +243,8 @@ Expected: clean install, `pnpm-lock.yaml` updated, no errors.
 
 - [x] **Step 9: Commit**
 
+Execution note: In this run, Step 9 was satisfied via incremental micro-commits for Steps 1-8 rather than one aggregate scaffolding commit.
+
 ```bash
 git add package.json pnpm-workspace.yaml tsconfig.json tsconfig.build.json eslint.config.js .node-version bunfig.toml .gitignore pnpm-lock.yaml
 git commit -m "feat: initialize pnpm workspace monorepo scaffolding"
