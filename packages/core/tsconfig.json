@@ -11,6 +11,7 @@
     { "path": "../config" },
     { "path": "../auth" },
     { "path": "../tools" },
-    { "path": "../sandbox" }
+    { "path": "../sandbox" },
+    { "path": "../memories" }
   ]
 }
