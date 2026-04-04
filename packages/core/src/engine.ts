@@ -6,6 +6,8 @@ import type {
   SessionSummary,
 } from "@clawdex/shared-types";
 import type { ToolRegistry } from "@clawdex/tools";
+import type { McpManager } from "@clawdex/mcp-client";
+import type { SkillRegistry } from "@clawdex/skills";
 import type { EngineOptions, TurnOptions, OpenAIStreamEvent } from "./types.js";
 import { Session } from "./session.js";
 import { SessionStore } from "./session-store.js";
@@ -29,6 +31,8 @@ export class ClawdexEngine {
   private readonly listeners = new Map<string, Set<EventHandler>>();
   private activeTurnRunner: TurnRunner | null = null;
   private readonly memoriesStore?: MemoryStore;
+  private readonly mcpManager?: McpManager;
+  private readonly skillRegistry?: SkillRegistry;
 
   constructor(opts: EngineOptions) {
     this.config = opts.config;
@@ -41,6 +45,8 @@ export class ClawdexEngine {
     if (opts.memoriesDir) {
       this.memoriesStore = new MemoryStore(opts.memoriesDir);
     }
+    this.mcpManager = opts.mcpManager;
+    this.skillRegistry = opts.skillRegistry;
   }
 
   // -- Event Emitter --
@@ -185,13 +191,21 @@ export class ClawdexEngine {
       : null;
     const memoryContext = buildMemoryContext(memorySummary);
 
+    // Build additional context from memories and skills
+    const contextParts: string[] = [];
+    if (memoryContext) contextParts.push(memoryContext);
+    const skillInstructions = this.skillRegistry?.getInstructions();
+    if (skillInstructions) {
+      contextParts.push("## Active Skills\n" + skillInstructions);
+    }
+
     // Build system prompt
     const systemPrompt = buildSystemPrompt({
       config: this.config,
       model,
       workingDir: session.workingDir,
       sandboxPolicy: session.sandboxPolicy,
-      additionalContext: memoryContext || undefined,
+      additionalContext: contextParts.length > 0 ? contextParts.join("\n\n") : undefined,
     });
 
     // Build message list for API

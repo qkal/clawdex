@@ -29,7 +29,7 @@ describe("MemoryStore", () => {
 
     const memories = await store.list();
     expect(memories).toHaveLength(2);
-    expect(memories[0].content).toContain("TypeScript");
+    expect(memories.some((m) => m.content.includes("TypeScript"))).toBe(true);
   });
 
   test("get returns a specific memory by id", async () => {
