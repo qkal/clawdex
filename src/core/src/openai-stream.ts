@@ -44,7 +44,7 @@ const MAX_RETRIES = 3;
  * Create an async generator that streams OpenAI Responses API events.
  *
  * Retries automatically on transient HTTP errors (429, 5xx) with exponential
- * backoff (1 s → 2 s → 4 s, capped at MAX_RETRIES attempts). Before each
+ * backoff (1 s → 2 s → 4 s, up to MAX_RETRIES attempts). Before each
  * retry a `stream_retrying` event is yielded so callers can surface feedback.
  *
  * Accepts optional fetchFn and sleepFn overrides for testing.
@@ -107,7 +107,7 @@ export async function* createOpenAIStream(
       const errBody = await r.json() as { error?: { message?: string } };
       if (errBody.error?.message) message = errBody.error.message;
     } catch {
-      // Use status code message
+      await r.body?.cancel().catch(() => {});
     }
 
     if (!RETRYABLE_STATUSES.has(r.status) || attempt === MAX_RETRIES) {
@@ -118,7 +118,7 @@ export async function* createOpenAIStream(
     // Retryable — yield a transient event so the caller can surface UI feedback,
     // then sleep with exponential backoff before the next attempt.
     yield { type: "stream_retrying", attempt: attempt + 1, status: r.status, message };
-    const backoffMs = Math.min(1000 * Math.pow(2, attempt), 4000);
+    const backoffMs = 1000 * Math.pow(2, attempt);
     await sleepFn(backoffMs);
   }
 
